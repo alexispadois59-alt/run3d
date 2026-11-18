@@ -381,6 +381,14 @@ body.race-route-active #toast:not(.show){transform:translate(-50%,140px)}
     white-space:normal!important;
   }
 }
+
+.pace-btn{background:rgba(255,255,255,.14)!important;color:#fff!important}
+@media(max-width:620px){
+  #raceMapStats .rm-acts{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:5px!important}
+  #raceMapStats .rm-acts #estBtn,#raceMapStats .rm-acts #paceBtn{grid-column:span 3!important;white-space:normal!important;line-height:1.15!important;min-height:34px!important}
+  #raceMapStats .rm-acts #gpxBtn{grid-column:span 4!important}
+  #raceMapStats .rm-acts .rm-tog,#raceMapStats .rm-acts .race-map-stats-close{grid-column:span 1!important}
+}
 </style>
 </head>
 <body>
@@ -1178,7 +1186,7 @@ async function saveCustomRace(){
   cancelRoute();raceFilter='all';raceQuery='';openRaces();toast('Course créée');
 }
 function showCustomRaceRoute(r){
-  $('estBtn').style.display=r.noEstimate?'none':'';
+  $('estBtn').style.display=r.noEstimate?'none':'';if($('paceBtn'))$('paceBtn').style.display=r.noEstimate?'none':'';
   closeRaces();clearDisplayedRaceRoute();clearDisplayedSavedRoute();
   document.body.classList.add('race-route-active');
   $('raceMapStats').hidden=false;
@@ -1204,7 +1212,7 @@ const VOL_EXP=[1.10,1.07,1.06,1.05],VOL_LABEL=['Moins de 20 km','20 à 40 km','4
 const VMA_PCT=[[.85,.80,.72,.63],[.88,.83,.76,.68],[.92,.87,.80,.74],[.95,.90,.84,.78]];
 const SURF_K={route:1,mixte:1.004,chemins:1.015};
 function getRunner(){try{return JSON.parse(localStorage.getItem('run3d_runner')||'{}')}catch{return{}}}
-function parseTime(t){const p=String(t).trim().split(':').map(Number);if(p.length<2||p.length>3||p.some(n=>!Number.isFinite(n)||n<0))return null;const v=p.reduce((a,n)=>a*60+n,0);return v>0?v:null}
+function timeParts(value){const raw=String(value??'').trim();if(!raw)return null;if(raw.includes(':')){const p=raw.split(':').map(Number);if(p.length<2||p.length>3||p.some(n=>!Number.isInteger(n)||n<0))return null;if(p.length===2){const [minutes,seconds]=p;if(seconds>59)return null;return{hours:0,minutes,seconds}}const [hours,minutes,seconds]=p;if(minutes>59||seconds>59)return null;return{hours,minutes,seconds}}const digits=raw.replace(/\D/g,'');if(!digits||digits.length>6)return null;if(digits.length<=2){const minutes=Number(digits);return minutes>0?{hours:0,minutes,seconds:0}:null}if(digits.length<=4){const minutes=Number(digits.slice(0,-2)),seconds=Number(digits.slice(-2));if(seconds>59)return null;return{hours:0,minutes,seconds}}const hours=Number(digits.slice(0,-4)),minutes=Number(digits.slice(-4,-2)),seconds=Number(digits.slice(-2));if(minutes>59||seconds>59)return null;return{hours,minutes,seconds}}function parseTime(value){const p=timeParts(value);if(!p)return null;const seconds=p.hours*3600+p.minutes*60+p.seconds;return seconds>0?seconds:null}function normalizeTimeInput(input){const p=timeParts(input.value);if(!p)return;const pad=v=>String(v).padStart(2,'0');input.value=p.hours>0?`${p.hours}:${pad(p.minutes)}:${pad(p.seconds)}`:`${p.minutes}:${pad(p.seconds)}`}
 function fmtTime(sec){const s=Math.round(sec),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60,z=n=>String(n).padStart(2,'0');return h?`${h}:${z(m)}:${z(r)}`:`${m}:${z(r)}`}
 function recencyWeight(v){return ({m1:1,m3:.85,m6:.62,old:.38})[v]||.85}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
@@ -1216,18 +1224,18 @@ function runnerForm(D,up,down){
   const seg=(id,opts,cur)=>`<div class="es-seg" id="${id}">${opts.map(([v,l])=>`<button type="button" data-v="${v}" class="${String(v)===String(cur)?'on':''}">${l}</button>`).join('')}</div>`;
   const val=id=>$(`${id}`).querySelector('.on').dataset.v;
   return new Promise(resolve=>{
-    $('dialog').innerHTML=`<h3>Estimer mon temps</h3>
+    $('dialog').innerHTML=`<h3>Estimer mon chrono</h3>
       <p class="es-sub">${escapeHtml($('raceMapStatsTitle').textContent)} · ${dist} km · D+ ${Math.round(up)} m</p>
       <div class="es-form">
         <div class="es-block">${seg('esB',[['time','Avec un chrono'],['vma','Sans chrono (VMA)']],r.base||'time')}</div>
         <div class="es-block" id="esTimeBlock"><div class="es-lab">Chrono de référence (le plus récent/représentatif)</div>
-          <input id="esT" class="es-time" inputmode="numeric" value="${escapeHtml(r.time||'')}" placeholder="49:56">
+          <input id="esT" class="es-time" type="text" inputmode="numeric" enterkeyhint="next" autocomplete="off" autocorrect="off" spellcheck="false" value="${escapeHtml(r.time||'')}" placeholder="Ex. 3608 ou 1:02:30"><div class="es-hint">Saisie rapide : 3608 = 36:08 · 10230 = 1:02:30</div>
           ${seg('esD',[['5','5 km'],['10','10 km'],['semi','Semi'],['marathon','Marathon']],r.refD||'10')}<div class="es-lab">Ancienneté de ce chrono</div>${seg('esRefAge',[['m1','< 1 mois'],['m3','1-3 mois'],['m6','3-6 mois'],['old','> 6 mois']],r.refAge||'m3')}<div class="es-block" id="esRegularityBlock"><div class="es-lab">Régularité depuis ce chrono</div>${seg('esRegularity',[['very','Très régulier'],['regular','Régulier'],['irregular','Peu régulier'],['comeback','Reprise']],r.regularity||'regular')}<div class="es-hint">Un entraînement régulier conserve la valeur du chrono ; une reprise réduit son poids.</div></div></div>
         <div class="es-block" id="esParBlock"><div class="es-lab">Terrain du chrono de référence</div>
           ${seg('esM',[['flat','Plat'],['same','Ce parcours'],['other','Autre D+']],r.refMode||'flat')}
           <input id="esU" class="es-small" type="number" min="0" step="10" placeholder="D+ du parcours de référence (m)" value="${escapeHtml(r.refUp??'')}"></div>
         <div class="es-block"><div class="es-lab">Ancien chrono sur CE parcours (facultatif)</div>
-          <input id="esSame" class="es-time" inputmode="numeric" value="${escapeHtml(r.sameCourseTime||'')}" placeholder="Ex. 2:14:30"><div class="es-lab">Ancienneté de ce chrono</div>${seg('esSameAge',[['m1','< 1 mois'],['m3','1-3 mois'],['m6','3-6 mois'],['old','> 6 mois']],r.sameCourseAge||'m6')}</div>
+          <input id="esSame" class="es-time" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" autocorrect="off" spellcheck="false" value="${escapeHtml(r.sameCourseTime||'')}" placeholder="Ex. 3705 ou 1:02:30"><div class="es-lab">Ancienneté de ce chrono</div>${seg('esSameAge',[['m1','< 1 mois'],['m3','1-3 mois'],['m6','3-6 mois'],['old','> 6 mois']],r.sameCourseAge||'m6')}</div>
         <div class="es-block"><div class="es-lab">Expérience en course</div>
           ${seg('esExp',[[0,'Débutant'],[1,'Régulier'],[2,'Expérimenté'],[3,'Très expérimenté']],r.exp??1)}
           <div class="es-hint">Ajuste prudemment la tenue d'allure sur les longues distances.</div></div>
@@ -1240,6 +1248,7 @@ function runnerForm(D,up,down){
     // Correct the literal option typo safely in generated markup.
     $('dialog').innerHTML=$('dialog').innerHTML.replace("mixte,'Mixte'","mixte,'Mixte'");
     $('modal').classList.add('show');
+    ['esT','esSame'].forEach(id=>{const input=$(id);if(!input)return;input.addEventListener('blur',()=>normalizeTimeInput(input));input.addEventListener('change',()=>normalizeTimeInput(input))});
     const refresh=()=>{const vm=val('esB')==='vma';$('esTimeBlock').style.display=$('esParBlock').style.display=vm?'none':'block';$('esVmaBlock').style.display=vm?'block':'none';$('esU').style.display=val('esM')==='other'?'block':'none';$('esSurfBlock').style.display=vm||val('esM')==='same'?'none':'block';$('esRegularityBlock').style.display=!vm&&val('esRefAge')!=='m1'?'block':'none'};
     refresh();
     $('dialog').onclick=e=>{const b=e.target.closest('.es-seg button');if(!b)return;b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));refresh()};
@@ -1257,6 +1266,46 @@ function runnerForm(D,up,down){
   });
 }
 function courseEquivalent(sec,dist,exponent){return sec*Math.pow(dist,exponent)}
+function paceTargetForm(D,up){
+  const saved=localStorage.getItem('run3d_target_time')||'';
+  return new Promise(resolve=>{
+    $('dialog').innerHTML=`<h3>Estimer mon allure</h3>
+      <p class="es-sub">${escapeHtml($('raceMapStatsTitle').textContent)} · ${D.toFixed(2).replace('.',',')} km · D+ ${Math.round(up)} m</p>
+      <div class="es-form">
+        <div class="es-block"><div class="es-lab">Temps objectif sur la course complète</div>
+          <input id="targetTime" class="es-time" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" autocorrect="off" spellcheck="false" value="${escapeHtml(saved)}" placeholder="Ex. 4000 ou 1:25:00">
+          <div class="es-hint">Saisie rapide : 4000 = 40:00 · 12500 = 1:25:00. RUN3D répartit ensuite l'effort selon le profil GPX.</div>
+        </div>
+      </div>
+      <div class="row"><button class="btn" id="dlgNo">Annuler</button><button class="btn solid" id="dlgYes">Calculer les allures</button></div>`;
+    $('modal').classList.add('show');
+    const input=$('targetTime');input.focus();input.addEventListener('blur',()=>normalizeTimeInput(input));
+    const close=v=>{$('modal').classList.remove('show');resolve(v)};
+    $('dlgNo').onclick=()=>close(null);
+    $('dlgYes').onclick=()=>{const raw=input.value.trim(),seconds=parseTime(raw);if(!seconds){toast('Entre un temps objectif valide.');input.focus();return}normalizeTimeInput(input);try{localStorage.setItem('run3d_target_time',input.value)}catch{}close(seconds)};
+  });
+}
+function pacePlanData(T){
+  let p=curProfile;if(!p)return null;
+  const Dm=(parseFloat($('raceMapDistance').textContent)||0)*1000,f=Dm>0?Dm/p.total:1;
+  p={...p,d:p.d.map(x=>x*f),total:p.total*f};
+  const ks=kmSplits(p),grade=ks.map(k=>0.7*k.up-0.25*k.down),base=(T-grade.reduce((a,b)=>a+b,0))/(p.total/1000);
+  let cum=0;const rows=ks.map((k,i)=>{const t=base*k.len+grade[i];cum+=t;return{...k,i,t,cum,slope:(k.up-k.down)/(k.len*1000)*100}});
+  return{p,rows};
+}
+function pacePlanHtml(T){
+  const plan=pacePlanData(T);
+  if(!plan)return `<div class="est-sub">Profil altimétrique indisponible : allure moyenne ${fmtTime(T/(parseFloat($('raceMapDistance').textContent)||1))} /km.</div>`;
+  const rows=plan.rows.filter(k=>k.len>=.995).map(k=>`<div class="est-row" style="border-left-color:${slopeColor(k.slope)}"><span>km ${k.i+1}</span><span><b>${fmtTime(k.t)}</b></span><span>${fmtTime(k.cum)}</span></div>`);
+  rows.push(`<div class="est-row end"><span>Arrivée</span><span>${fmtTime(T/(plan.p.total/1000))} moy.</span><span><b>${fmtTime(T)}</b></span></div>`);
+  return `<div class="est-sub">Plan d'allure adapté au D+ et au D− · allure cible puis passage cumulé</div><div class="est-tbl">${rows.join('')}</div>`;
+}
+async function estimatePace(){
+  const D=parseFloat($('raceMapDistance').textContent),up=parseFloat($('raceMapDplus').textContent)||0;
+  if(!(D>0)){toast('Attendez le chargement du parcours.');return}
+  const target=await paceTargetForm(D,up);if(!target)return;
+  $('estOut').innerHTML=`<div class="est-main">Objectif ${fmtTime(target)}</div><div class="est-sub">Course complète ${D.toFixed(2)} km · allure moyenne ${fmtTime(target/D)} /km</div>${pacePlanHtml(target)}`;
+}
 function estimateTimeModel(D,up,down,f){
   const expIndex=clamp(+f.exp||0,0,3),volIndex=clamp(+f.vol||0,0,3);
   const expLevel=[1.06,1,.98,.96][expIndex],ex=[1.10,1.07,1.06,1.05][volIndex];
@@ -1316,8 +1365,8 @@ const high = T * (1 + uncertainty);
 }
 (function(){
   const box=document.createElement('div');box.id='raceEstimate';
-  box.innerHTML='<button class="est-btn" id="estBtn">Estimer mon temps</button><div id="estOut"></div>';
-  $('raceMapStats').appendChild(box);$('estBtn').onclick=estimateTime;
+  box.innerHTML='<button class="est-btn" id="estBtn">Estimer mon chrono</button><button class="est-btn pace-btn" id="paceBtn">Estimer mon allure</button><div id="estOut"></div>';
+  $('raceMapStats').appendChild(box);$('estBtn').onclick=estimateTime;$('paceBtn').onclick=estimatePace;
   new MutationObserver(()=>{$('estOut').innerHTML=''}).observe($('raceMapStatsTitle'),{childList:true,characterData:true,subtree:true});
 })();
 /* =========================
@@ -1396,12 +1445,13 @@ function exportGpx(){
   const g=document.createElement('button');g.className='est-btn';g.id='gpxBtn';g.textContent='Export GPX';g.style.background='rgba(255,255,255,.14)';g.onclick=exportGpx;$('estBtn').after(g);
 })();
 (function(){
-  const head=document.querySelector('#raceMapStats .race-map-stats-head'),close=$('raceMapStatsClose'),est=$('estBtn'),gpx=$('gpxBtn');
+  const head=document.querySelector('#raceMapStats .race-map-stats-head'),close=$('raceMapStatsClose'),est=$('estBtn'),pace=$('paceBtn'),gpx=$('gpxBtn');
   const tog=document.createElement('button');tog.className='rm-tog';tog.setAttribute('aria-label','Réduire le panneau');
   tog.innerHTML='<svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M6 15l6-6 6 6"/></svg>';
   tog.onclick=()=>$('raceMapStats').classList.toggle('mini');
-  est.textContent='Estimer';est.addEventListener('click',()=>$('raceMapStats').classList.remove('mini'));
-  const row=document.createElement('div');row.className='rm-acts';row.append(est,gpx,tog,close);head.appendChild(row);
+  est.textContent='Estimer mon chrono';pace.textContent='Estimer mon allure';
+  [est,pace].forEach(b=>b.addEventListener('click',()=>$('raceMapStats').classList.remove('mini')));
+  const row=document.createElement('div');row.className='rm-acts';row.append(est,pace,gpx,tog,close);head.appendChild(row);
 })();
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('racesPage').classList.contains('show')&&!$('modal').classList.contains('show'))racesBack()});
 
