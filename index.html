@@ -389,6 +389,15 @@ body.race-route-active #toast:not(.show){transform:translate(-50%,140px)}
   #raceMapStats .rm-acts #gpxBtn{grid-column:span 4!important}
   #raceMapStats .rm-acts .rm-tog,#raceMapStats .rm-acts .race-map-stats-close{grid-column:span 1!important}
 }
+
+.chrono-detail-btn{width:100%;margin:9px 0 5px;padding:9px 12px;border-radius:11px;background:rgba(122,77,255,.18);border:1px solid rgba(160,130,255,.38);color:#fff;font-weight:800;font-size:12px}
+.chrono-details{display:none;margin:5px 0 9px;border:1px solid rgba(255,255,255,.12);border-radius:12px;overflow:hidden;background:rgba(0,0,0,.12)}
+.chrono-details.show{display:block}
+.chrono-detail-base,.chrono-detail-final{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:9px 10px;background:rgba(122,77,255,.14)}
+.chrono-detail-base span,.chrono-detail-final span{font-size:11px;font-weight:800}.chrono-detail-base strong,.chrono-detail-final strong{font-size:15px}.chrono-detail-base small{grid-column:1/-1;font-size:9px;opacity:.7}
+.chrono-detail-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:7px;padding:8px 10px;border-top:1px solid rgba(255,255,255,.08)}
+.chrono-detail-row div{min-width:0}.chrono-detail-row strong{display:block;font-size:10px}.chrono-detail-row small{display:block;font-size:8px;opacity:.65;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chrono-detail-row span{font-size:11px;font-weight:850}.chrono-detail-row em{font-style:normal;font-size:10px;opacity:.72}.chrono-detail-row.bonus span{color:#7ee2ad}.chrono-detail-row.penalty span{color:#ff9d8f}.chrono-detail-final{border-top:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06)}
+@media(max-width:390px){.chrono-detail-row{grid-template-columns:minmax(0,1fr) auto}.chrono-detail-row em{display:none}}
 </style>
 </head>
 <body>
@@ -1309,16 +1318,64 @@ async function estimatePace(){
 function estimateTimeModel(D,up,down,f){
   const expIndex=clamp(+f.exp||0,0,3),volIndex=clamp(+f.vol||0,0,3);
   const expLevel=[1.06,1,.98,.96][expIndex],ex=[1.10,1.07,1.06,1.05][volIndex];
-  const terrain=Math.max(0,up)*.30+Math.max(0,down)*.04;let T,basis;
-  if(f.base==='vma'){const pc=pctVma(volIndex,D);T=D/(+f.vma*pc)*3600;basis='VMA'}else{const d0=REF_D[f.refD],t0=parseTime(f.time),same=f.refMode==='same';const refTerrain=same?Math.max(0,up*.30-down*.04):(f.refMode==='other'?Math.max(0,+f.refUp*.30):0);T=Math.max(t0-refTerrain,t0*.88)*Math.pow(D/d0,ex)*continuityFactor(f.refAge,f.regularity);basis='chrono principal'}
-  const volumeBase=[1.030,1,.980,.965][volIndex],distanceSensitivity=D<=10.5?.80:D<=21.5?.95:1.15;T*=Math.pow(volumeBase,distanceSensitivity);basis+=' · '+VOL_LABEL[volIndex];
-  if(f.base==='vma')T*=expLevel;else{const d0=REF_D[f.refD],gap=Math.min(1,Math.abs(Math.log(D/d0))/Math.log(4.2195)),extension=D>d0?gap:gap*.30;T*=Math.pow(expLevel,extension)}
+  const terrain=Math.max(0,up)*.30+Math.max(0,down)*.04;
+  const details=[];
+  let T,basis,baseT,baseLabel;
+  const apply=(label,next,note='')=>{const before=T;T=next;details.push({label,before,after:T,delta:T-before,note})};
+
+  if(f.base==='vma'){
+    const pc=pctVma(volIndex,D);
+    T=D/(+f.vma*pc)*3600;baseT=T;baseLabel=`Base VMA ${Number(f.vma).toFixed(1)} km/h · ${Math.round(pc*100)} %`;basis='VMA';
+  }else{
+    const d0=REF_D[f.refD],t0=parseTime(f.time),same=f.refMode==='same';
+    const refTerrain=same?Math.max(0,up*.30-down*.04):(f.refMode==='other'?Math.max(0,+f.refUp*.30):0);
+    const flat=Math.max(t0-refTerrain,t0*.88);
+    T=flat*Math.pow(D/d0,ex);baseT=T;baseLabel=`Chrono ${fmtTime(t0)} sur ${d0===21.0975?'semi':d0===42.195?'marathon':d0+' km'} converti sur ${D.toFixed(2)} km`;
+    const continuity=continuityFactor(f.refAge,f.regularity);
+    apply('Ancienneté et régularité',T*continuity,`coefficient ${continuity.toFixed(3)}`);basis='chrono principal';
+  }
+
+  const volumeBase=[1.030,1,.980,.965][volIndex],distanceSensitivity=D<=10.5?.80:D<=21.5?.95:1.15;
+  const volumeFactor=Math.pow(volumeBase,distanceSensitivity);
+  apply('Volume hebdomadaire',T*volumeFactor,VOL_LABEL[volIndex]);basis+=' · '+VOL_LABEL[volIndex];
+
+  let experienceFactor;
+  if(f.base==='vma')experienceFactor=expLevel;
+  else{const d0=REF_D[f.refD],gap=Math.min(1,Math.abs(Math.log(D/d0))/Math.log(4.2195)),extension=D>d0?gap:gap*.30;experienceFactor=Math.pow(expLevel,extension)}
+  apply('Expérience en course',T*experienceFactor,['Débutant','Régulier','Expérimenté','Très expérimenté'][expIndex]);
+
   const sessions=clamp(+f.sessionsPerWeek||3,1,14),quality=clamp(+f.qualitySessions||0,0,7),confidence=clamp(+f.confidence||7,1,10);
-  T*=(sessions<=2?1.012:sessions<=4?1:sessions<=6?.995:1)*(quality===0?1.010:quality===1?1:quality===2?.995:1.003)*(D<15?1:(f.nutrition==='tested'?.997:f.nutrition==='untested'?1.018:1.006))*(1+(6-confidence)*.001)*({fresh:.996,normal:1,fatigued:1.015,recovery:1.035}[f.readiness]||1);
-  T+=terrain;if(f.refMode!=='same'&&f.base!=='vma')T*=SURF_K[f.surf||'route'];
-  if(f.sameCourseTime&&parseTime(f.sameCourseTime)){const prior=parseTime(f.sameCourseTime),ageBase={m1:.40,m3:.30,m6:.20,old:.10}[f.sameCourseAge]||.20,regBoost={very:1.45,regular:1.20,irregular:.70,comeback:.35}[f.regularity]||1,historyWeight=clamp(ageBase*regBoost,.04,.48),ratio=clamp(T/prior,.65,1.35);T=prior*Math.pow(ratio,1-historyWeight);basis+=' + ancien parcours '+Math.round(historyWeight*100)+' %'}
-  return{T,basis};
+  const sessionFactor=sessions<=2?1.012:sessions<=4?1:sessions<=6?.995:1;
+  const qualityFactor=quality===0?1.010:quality===1?1:quality===2?.995:1.003;
+  const nutritionFactor=D<15?1:(f.nutrition==='tested'?.997:f.nutrition==='untested'?1.018:1.006);
+  const confidenceFactor=1+(6-confidence)*.001;
+  const readinessFactor={fresh:.996,normal:1,fatigued:1.015,recovery:1.035}[f.readiness]||1;
+  apply('Fréquence d’entraînement',T*sessionFactor,`${sessions} séance${sessions>1?'s':''}/semaine`);
+  apply('Séances VMA / seuil',T*qualityFactor,`${quality} séance${quality>1?'s':''}/semaine`);
+  if(D>=15)apply('Nutrition',T*nutritionFactor,f.nutrition==='tested'?'Testée et approuvée':f.nutrition==='untested'?'Non testée':'Non nécessaire');
+  apply('Niveau de confiance',T*confidenceFactor,`${confidence}/10`);
+  apply('Forme et récupération',T*readinessFactor,{fresh:'Frais',normal:'Normal',fatigued:'Fatigue légère',recovery:'Reprise / récupération'}[f.readiness]||'Normal');
+
+  apply('Dénivelé du parcours',T+terrain,`D+ ${Math.round(up)} m · D− ${Math.round(down)} m`);
+  if(f.refMode!=='same'&&f.base!=='vma'){
+    const surfaceFactor=SURF_K[f.surf||'route'];
+    apply('Surface',T*surfaceFactor,{route:'Route',mixte:'Mixte',chemins:'Chemins'}[f.surf]||'Route');
+  }
+  if(f.sameCourseTime&&parseTime(f.sameCourseTime)){
+    const prior=parseTime(f.sameCourseTime),ageBase={m1:.40,m3:.30,m6:.20,old:.10}[f.sameCourseAge]||.20,regBoost={very:1.45,regular:1.20,irregular:.70,comeback:.35}[f.regularity]||1,historyWeight=clamp(ageBase*regBoost,.04,.48),ratio=clamp(T/prior,.65,1.35);
+    apply('Ancien chrono sur ce parcours',prior*Math.pow(ratio,1-historyWeight),`${fmtTime(prior)} · poids ${Math.round(historyWeight*100)} %`);basis+=' + ancien parcours '+Math.round(historyWeight*100)+' %';
+  }
+  return{T,basis,details,baseT,baseLabel};
 }
+function signedDuration(delta){
+  const n=Math.round(delta),sign=n>0?'+':n<0?'−':'±';
+  return sign+(n===0?'0 s':fmtTime(Math.abs(n)));
+}
+function chronoDetailsHtml(model){
+  const rows=model.details.filter(x=>Math.abs(x.delta)>=.5).map(x=>`<div class="chrono-detail-row ${x.delta>0?'penalty':x.delta<0?'bonus':'neutral'}"><div><strong>${escapeHtml(x.label)}</strong><small>${escapeHtml(x.note||'')}</small></div><span>${signedDuration(x.delta)}</span><em>${fmtTime(x.after)}</em></div>`).join('');
+  return `<button type="button" class="chrono-detail-btn" id="chronoDetailBtn">Détail chrono</button><div class="chrono-details" id="chronoDetails"><div class="chrono-detail-base"><span>Base de référence</span><strong>${fmtTime(model.baseT)}</strong><small>${escapeHtml(model.baseLabel)}</small></div>${rows}<div class="chrono-detail-final"><span>Chrono prédit</span><strong>${fmtTime(model.T)}</strong></div></div>`;
+}
+
 function officialDistanceForRace(r,D){
   const declared=Number(r?.distance);if(Number.isFinite(declared)&&declared>0)return declared;
   const typeMap={'5km':5,'10km':10,'21km':21.0975,'semi':21.0975,'42km':42.195,'marathon':42.195};
@@ -1337,7 +1394,7 @@ async function estimateTime(){
   if(!(D>0)){toast('Attendez le chargement du parcours.');return}
   const f=await runnerForm(D,up,down);if(!f)return;
   try{localStorage.setItem('run3d_runner',JSON.stringify(f))}catch{}
-  const {T,basis}=estimateTimeModel(D,up,down,f);
+  const model=estimateTimeModel(D,up,down,f),{T,basis}=model;
 // Intervalle resserré pour les performances bien documentées
 let uncertainty = .012;
 
@@ -1361,7 +1418,9 @@ uncertainty = Math.max(.008, Math.min(.06, uncertainty));
 const low = T * (1 - uncertainty);
 const high = T * (1 + uncertainty);
   const exactHtml=exactDistanceEstimateHtml(D,up,down,f);
-  $('estOut').innerHTML=`<div class="est-main">${fmtTime(T)}</div><div class="est-sub">Course complète ${D.toFixed(2)} km · ${fmtTime(T/D)} /km · de ${fmtTime(low)} à ${fmtTime(high)}</div>${exactHtml}<div class="est-sub">${basis} · D+ ${Math.round(up)} m · marge ${Math.round(uncertainty*100)}–${Math.round(uncertainty*125)} %</div>${splitsHtml(T)}`;
+  $('estOut').innerHTML=`<div class="est-main">${fmtTime(T)}</div><div class="est-sub">Course complète ${D.toFixed(2)} km · ${fmtTime(T/D)} /km · de ${fmtTime(low)} à ${fmtTime(high)}</div>${exactHtml}${chronoDetailsHtml(model)}<div class="est-sub">${basis} · D+ ${Math.round(up)} m · marge ${Math.round(uncertainty*100)}–${Math.round(uncertainty*125)} %</div>${splitsHtml(T)}`;
+  const detailBtn=$('chronoDetailBtn'),detailBox=$('chronoDetails');
+  if(detailBtn&&detailBox)detailBtn.onclick=()=>{const open=detailBox.classList.toggle('show');detailBtn.textContent=open?'Masquer le détail':'Détail chrono'};
 }
 (function(){
   const box=document.createElement('div');box.id='raceEstimate';
