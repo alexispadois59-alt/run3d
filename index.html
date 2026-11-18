@@ -83,7 +83,7 @@ body.routing #routePanel{transform:translate(-50%,0);opacity:1;pointer-events:au
 .card{padding:18px;border-radius:20px;background:var(--solid);border:1px solid var(--line);margin-bottom:12px}.card h3{margin:0 0 12px;font-size:16px}.kv{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-top:1px solid var(--line);font-size:14px}.kv:first-of-type{border-top:0}.kv span{color:var(--muted)}.kv b{text-align:right}.na{color:var(--muted);font-weight:600}
 .d-actions{display:flex;gap:10px;flex-wrap:wrap}.cta{display:flex;align-items:center;gap:8px;padding:13px 18px;border-radius:14px;background:var(--accent);color:#fff;font-weight:700;font-size:14px}.cta.secondary{background:var(--soft);color:var(--ink)}
 .src a{display:block;padding:8px 0;color:var(--accent);font-weight:600;font-size:14px;text-decoration:none;overflow-wrap:anywhere}.d-note{font-size:13px;color:var(--muted);line-height:1.45}
-#modal{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;width:100%;height:100dvh;padding:max(12px,env(safe-area-inset-top,0px)) 12px max(12px,env(safe-area-inset-bottom,0px));overflow:hidden;background:rgba(10,18,26,.48)}#modal.show{display:flex}.dialog{width:min(420px,100%);max-width:100%;max-height:calc(100dvh - 48px);min-height:0;margin:auto;padding:20px;display:flex;flex-direction:column;overflow:hidden;background:var(--solid);border-radius:22px;box-shadow:var(--shadow)}.dialog h3{margin:0 0 6px}.dialog p{margin:0 0 16px;color:var(--muted);font-size:14px}.dialog input{width:100%;padding:13px;border-radius:13px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;margin-bottom:16px}.dialog .row{flex:0 0 auto;display:flex;gap:8px;justify-content:flex-end;padding-top:10px}.btn{padding:12px 18px;border-radius:13px;background:var(--soft);font-weight:700}.btn.solid{background:var(--ink);color:var(--solid)}.btn.danger{background:var(--danger);color:#fff}@media(max-width:520px){#modal{padding:max(8px,env(safe-area-inset-top,0px)) 8px max(8px,env(safe-area-inset-bottom,0px))}.dialog{width:100%;max-height:calc(100dvh - 16px);padding:16px;border-radius:18px}.dialog .row{position:sticky;bottom:0;background:var(--solid)}.dialog .row .btn{flex:1}}
+#modal{position:absolute;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(10,18,26,.4);padding:20px}#modal.show{display:flex}.dialog{width:min(380px,100%);background:var(--solid);border-radius:24px;padding:22px;box-shadow:var(--shadow)max-height:85vh;display:flex;flex-direction:column;overflow:hidden;}.dialog h3{margin:0 0 6px}.dialog p{margin:0 0 16px;color:var(--muted);font-size:14px}.dialog input{width:100%;padding:13px;border-radius:13px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;margin-bottom:16px}.dialog .row{display:flex;gap:8px;justify-content:flex-end}.btn{padding:12px 18px;border-radius:13px;background:var(--soft);font-weight:700}.btn.solid{background:var(--ink);color:var(--solid)}.btn.danger{background:var(--danger);color:#fff}
 #toast{position:absolute;top:16px;left:50%;transform:translate(-50%,-90px);z-index:80;padding:12px 18px;border-radius:14px;background:var(--ink);color:var(--solid);font-size:14px;font-weight:600;max-width:calc(100% - 32px);transition:.3s;box-shadow:var(--shadow)}#toast.show{transform:translate(-50%,0)}
 .empty{text-align:center;color:var(--muted);padding:40px 24px}.empty strong{display:block;color:var(--ink);margin-bottom:4px}
 
@@ -259,8 +259,8 @@ body.race-route-active #searchBar{
 .run-pin.start .pin-body,.run-pin.loop .pin-body{fill:var(--accent)}
 .run-pin.end .pin-body{fill:#0f1c26}
 .es-sub{margin:-2px 0 14px!important;font-size:13px!important}
-.es-form{display:grid;gap:16px;margin-bottom:8px;padding-right:3px;flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-.dialog:has(.es-form){max-height:calc(100dvh - 24px)}
+.es-form{display:grid;gap:16px;margin-bottom:18px;flex:1;min-height:0;overflow-y:auto;}
+.dialog:has(.es-form){max-height:85vh;}
 .es-lab{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:7px;letter-spacing:.02em}
 .es-seg{display:flex;gap:4px;padding:3px;border-radius:14px;background:var(--soft)}
 .es-seg button{flex:1;padding:10px 4px;border-radius:11px;font-size:13px;font-weight:700;color:var(--muted)}
@@ -279,106 +279,107 @@ body.race-route-active #toast{top:auto;bottom:calc(16px + env(safe-area-inset-bo
 body.race-route-active #toast:not(.show){transform:translate(-50%,140px)}
 .rp-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.rp-tools .cta{flex:1 1 auto;justify-content:center;padding:11px 14px;font-size:13px}.cta.alt{background:var(--soft);color:var(--ink)}
 
-/* RUN3D mobile: barre noire du parcours réellement centrée */
-@media(max-width:620px){
-  .race-map-stats{
+/* Correctif mobile final : panneau entier visible, sans largeur cachée */
+@media (max-width:620px){
+  #raceMapStats.race-map-stats{
     position:fixed!important;
-    top:max(8px,env(safe-area-inset-top,0px))!important;
-    left:8px!important;
-    right:8px!important;
-    transform:none!important;
-    width:auto!important;
-    max-width:600px!important;
-    margin:0 auto!important;
-    padding:10px 10px 11px!important;
-    box-sizing:border-box!important;
-    max-height:calc(100dvh - 16px - env(safe-area-inset-top,0px))!important;
-    overflow:auto!important;
-  }
-  .race-map-stats-head{width:100%;align-items:center!important;gap:8px!important}
-  .race-map-stats-head>div:first-child{min-width:0;flex:1}
-  .race-map-stats-title,.race-map-stats-sub{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .rm-acts{display:flex;align-items:center;justify-content:flex-end;gap:5px;flex:none}
-  .rm-acts .est-btn{padding:7px 9px;font-size:11px}
-  .race-map-stat-grid{width:100%;grid-template-columns:repeat(5,minmax(0,1fr))!important}
-}
-@media(max-width:390px){
-  .race-map-stats{left:6px!important;right:6px!important;padding:9px 8px 10px!important}
-  .race-map-stats-title{font-size:14px!important}
-  .race-map-stats-sub{font-size:10px!important}
-  .rm-acts .est-btn{padding:6px 7px;font-size:10px}
-  .race-map-stats-close,.rm-tog{width:28px!important;height:28px!important}
-  .race-map-stat-grid strong{font-size:12px!important}
-  .race-map-stat-grid span{font-size:8px!important}
-}
-
-/* RUN3D mobile : panneau parcours complet, sans débordement horizontal */
-@media(max-width:620px){
-  .race-map-stats{
-    position:fixed!important;
-    top:max(7px,env(safe-area-inset-top,0px))!important;
-    left:50%!important;
+    top:max(6px,env(safe-area-inset-top,0px))!important;
+    left:6px!important;
     right:auto!important;
-    transform:translateX(-50%)!important;
+    transform:none!important;
     width:calc(100vw - 12px)!important;
-    max-width:600px!important;
+    max-width:none!important;
     min-width:0!important;
     margin:0!important;
-    padding:9px 8px 10px!important;
+    padding:9px!important;
     box-sizing:border-box!important;
     overflow-x:hidden!important;
     overflow-y:auto!important;
   }
-  .race-map-stats-head{
+  #raceMapStats .race-map-stats-head{
+    display:block!important;
     width:100%!important;
     min-width:0!important;
-    display:grid!important;
-    grid-template-columns:minmax(0,1fr)!important;
-    gap:7px!important;
-    align-items:center!important;
   }
-  .race-map-stats-head>div:first-child{min-width:0!important;width:100%!important}
-  .race-map-stats-title,.race-map-stats-sub{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .race-map-stats-title{font-size:14px!important}
-  .race-map-stats-sub{font-size:10px!important}
-  .rm-acts{
+  #raceMapStats .race-map-stats-head>div:first-child{
+    display:block!important;
     width:100%!important;
     min-width:0!important;
-    display:grid!important;
-    grid-template-columns:minmax(0,1fr) minmax(0,1fr) 30px 30px!important;
-    gap:5px!important;
-    align-items:center!important;
   }
-  .rm-acts .est-btn{
-    min-width:0!important;
+  #raceMapStats .race-map-stats-title,
+  #raceMapStats .race-map-stats-sub{
+    display:block!important;
     width:100%!important;
-    padding:7px 5px!important;
-    font-size:10px!important;
+    max-width:100%!important;
     white-space:nowrap!important;
     overflow:hidden!important;
     text-overflow:ellipsis!important;
   }
-  .race-map-stats-close,.rm-tog{width:30px!important;height:30px!important;min-width:30px!important}
-  .race-map-stat-grid{
+  #raceMapStats .race-map-stats-title{font-size:14px!important}
+  #raceMapStats .race-map-stats-sub{font-size:10px!important;margin-top:1px!important}
+  #raceMapStats .rm-acts{
+    display:flex!important;
     width:100%!important;
     min-width:0!important;
+    margin-top:7px!important;
+    gap:5px!important;
+    align-items:center!important;
+  }
+  #raceMapStats .rm-acts .est-btn{
+    flex:1 1 0!important;
+    min-width:0!important;
+    width:auto!important;
+    padding:7px 5px!important;
+    font-size:10px!important;
+    white-space:nowrap!important;
+  }
+  #raceMapStats .race-map-stats-close,
+  #raceMapStats .rm-tog{
+    flex:0 0 30px!important;
+    width:30px!important;
+    min-width:30px!important;
+    height:30px!important;
+  }
+  #raceMapStats .race-map-stat-grid{
     display:grid!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
     grid-template-columns:repeat(6,minmax(0,1fr))!important;
     gap:5px!important;
-    margin-top:7px!important;
-    overflow:visible!important;
+    margin:8px 0 0!important;
+    padding:0!important;
+    overflow:hidden!important;
   }
-  .race-map-stat-grid>div{min-width:0!important;padding:6px 3px!important}
-  .race-map-stat-grid>div:nth-child(-n+3){grid-column:span 2}
-  .race-map-stat-grid>div:nth-child(n+4){grid-column:span 3}
-  .race-map-stat-grid strong{font-size:12px!important;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis}
-  .race-map-stat-grid span{font-size:8px!important;white-space:normal!important;line-height:1.1!important}
-}
-@media(max-width:350px){
-  .race-map-stats{width:calc(100vw - 8px)!important;padding:8px 6px 9px!important}
-  .rm-acts{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 28px 28px!important}
-  .race-map-stats-close,.rm-tog{width:28px!important;height:28px!important;min-width:28px!important}
-  .race-map-stat-grid strong{font-size:11px!important}
+  #raceMapStats .race-map-stat-grid>div{
+    display:block!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:6px 2px!important;
+    box-sizing:border-box!important;
+  }
+  #raceMapStats .race-map-stat-grid>div:nth-child(1),
+  #raceMapStats .race-map-stat-grid>div:nth-child(2),
+  #raceMapStats .race-map-stat-grid>div:nth-child(3){grid-column:span 2!important}
+  #raceMapStats .race-map-stat-grid>div:nth-child(4),
+  #raceMapStats .race-map-stat-grid>div:nth-child(5){grid-column:span 3!important}
+  #raceMapStats .race-map-stat-grid strong{
+    display:block!important;
+    width:100%!important;
+    font-size:12px!important;
+    white-space:nowrap!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+  #raceMapStats .race-map-stat-grid span{
+    display:block!important;
+    width:100%!important;
+    font-size:8px!important;
+    line-height:1.1!important;
+    white-space:normal!important;
+  }
 }
 </style>
 </head>
@@ -1203,7 +1204,7 @@ const VOL_EXP=[1.10,1.07,1.06,1.05],VOL_LABEL=['Moins de 20 km','20 à 40 km','4
 const VMA_PCT=[[.85,.80,.72,.63],[.88,.83,.76,.68],[.92,.87,.80,.74],[.95,.90,.84,.78]];
 const SURF_K={route:1,mixte:1.004,chemins:1.015};
 function getRunner(){try{return JSON.parse(localStorage.getItem('run3d_runner')||'{}')}catch{return{}}}
-function timeParts(value){const raw=String(value??'').trim();if(!raw)return null;if(raw.includes(':')){const p=raw.split(':').map(Number);if(p.length<2||p.length>3||p.some(n=>!Number.isInteger(n)||n<0))return null;if(p.length===2){const [minutes,seconds]=p;if(seconds>59)return null;return{hours:0,minutes,seconds}}const [hours,minutes,seconds]=p;if(minutes>59||seconds>59)return null;return{hours,minutes,seconds}}const digits=raw.replace(/\D/g,'');if(!digits||digits.length>6)return null;if(digits.length<=2){const minutes=Number(digits);return minutes>0?{hours:0,minutes,seconds:0}:null}if(digits.length<=4){const minutes=Number(digits.slice(0,-2)),seconds=Number(digits.slice(-2));if(seconds>59)return null;return{hours:0,minutes,seconds}}const hours=Number(digits.slice(0,-4)),minutes=Number(digits.slice(-4,-2)),seconds=Number(digits.slice(-2));if(minutes>59||seconds>59)return null;return{hours,minutes,seconds}}function parseTime(value){const p=timeParts(value);if(!p)return null;const seconds=p.hours*3600+p.minutes*60+p.seconds;return seconds>0?seconds:null}function normalizeTimeInput(input){const p=timeParts(input.value);if(!p)return;const pad=v=>String(v).padStart(2,'0');input.value=p.hours>0?`${p.hours}:${pad(p.minutes)}:${pad(p.seconds)}`:`${p.minutes}:${pad(p.seconds)}`}
+function parseTime(t){const p=String(t).trim().split(':').map(Number);if(p.length<2||p.length>3||p.some(n=>!Number.isFinite(n)||n<0))return null;const v=p.reduce((a,n)=>a*60+n,0);return v>0?v:null}
 function fmtTime(sec){const s=Math.round(sec),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60,z=n=>String(n).padStart(2,'0');return h?`${h}:${z(m)}:${z(r)}`:`${m}:${z(r)}`}
 function recencyWeight(v){return ({m1:1,m3:.85,m6:.62,old:.38})[v]||.85}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
@@ -1220,13 +1221,13 @@ function runnerForm(D,up,down){
       <div class="es-form">
         <div class="es-block">${seg('esB',[['time','Avec un chrono'],['vma','Sans chrono (VMA)']],r.base||'time')}</div>
         <div class="es-block" id="esTimeBlock"><div class="es-lab">Chrono de référence (le plus récent/représentatif)</div>
-          <input id="esT" class="es-time" type="text" inputmode="numeric" enterkeyhint="next" autocomplete="off" autocorrect="off" spellcheck="false" value="${escapeHtml(r.time||'')}" placeholder="Ex. 3608 ou 1:02:30"><div class="es-hint">Saisie rapide : 3608 = 36:08 · 10230 = 1:02:30</div>
+          <input id="esT" class="es-time" inputmode="numeric" value="${escapeHtml(r.time||'')}" placeholder="49:56">
           ${seg('esD',[['5','5 km'],['10','10 km'],['semi','Semi'],['marathon','Marathon']],r.refD||'10')}<div class="es-lab">Ancienneté de ce chrono</div>${seg('esRefAge',[['m1','< 1 mois'],['m3','1-3 mois'],['m6','3-6 mois'],['old','> 6 mois']],r.refAge||'m3')}<div class="es-block" id="esRegularityBlock"><div class="es-lab">Régularité depuis ce chrono</div>${seg('esRegularity',[['very','Très régulier'],['regular','Régulier'],['irregular','Peu régulier'],['comeback','Reprise']],r.regularity||'regular')}<div class="es-hint">Un entraînement régulier conserve la valeur du chrono ; une reprise réduit son poids.</div></div></div>
         <div class="es-block" id="esParBlock"><div class="es-lab">Terrain du chrono de référence</div>
           ${seg('esM',[['flat','Plat'],['same','Ce parcours'],['other','Autre D+']],r.refMode||'flat')}
           <input id="esU" class="es-small" type="number" min="0" step="10" placeholder="D+ du parcours de référence (m)" value="${escapeHtml(r.refUp??'')}"></div>
         <div class="es-block"><div class="es-lab">Ancien chrono sur CE parcours (facultatif)</div>
-          <input id="esSame" class="es-time" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" autocorrect="off" spellcheck="false" value="${escapeHtml(r.sameCourseTime||'')}" placeholder="Ex. 3705 ou 1:02:30"><div class="es-lab">Ancienneté de ce chrono</div>${seg('esSameAge',[['m1','< 1 mois'],['m3','1-3 mois'],['m6','3-6 mois'],['old','> 6 mois']],r.sameCourseAge||'m6')}</div>
+          <input id="esSame" class="es-time" inputmode="numeric" value="${escapeHtml(r.sameCourseTime||'')}" placeholder="Ex. 2:14:30"><div class="es-lab">Ancienneté de ce chrono</div>${seg('esSameAge',[['m1','< 1 mois'],['m3','1-3 mois'],['m6','3-6 mois'],['old','> 6 mois']],r.sameCourseAge||'m6')}</div>
         <div class="es-block"><div class="es-lab">Expérience en course</div>
           ${seg('esExp',[[0,'Débutant'],[1,'Régulier'],[2,'Expérimenté'],[3,'Très expérimenté']],r.exp??1)}
           <div class="es-hint">Ajuste prudemment la tenue d'allure sur les longues distances.</div></div>
@@ -1239,7 +1240,6 @@ function runnerForm(D,up,down){
     // Correct the literal option typo safely in generated markup.
     $('dialog').innerHTML=$('dialog').innerHTML.replace("mixte,'Mixte'","mixte,'Mixte'");
     $('modal').classList.add('show');
-    ['esT','esSame'].forEach(id=>{const input=$(id);if(!input)return;input.addEventListener('blur',()=>normalizeTimeInput(input));input.addEventListener('change',()=>normalizeTimeInput(input))});
     const refresh=()=>{const vm=val('esB')==='vma';$('esTimeBlock').style.display=$('esParBlock').style.display=vm?'none':'block';$('esVmaBlock').style.display=vm?'block':'none';$('esU').style.display=val('esM')==='other'?'block':'none';$('esSurfBlock').style.display=vm||val('esM')==='same'?'none':'block';$('esRegularityBlock').style.display=!vm&&val('esRefAge')!=='m1'?'block':'none'};
     refresh();
     $('dialog').onclick=e=>{const b=e.target.closest('.es-seg button');if(!b)return;b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));refresh()};
