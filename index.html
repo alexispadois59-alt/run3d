@@ -1,4 +1,3 @@
-<RUN3D_V12.html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -84,7 +83,7 @@ body.routing #routePanel{transform:translate(-50%,0);opacity:1;pointer-events:au
 .card{padding:18px;border-radius:20px;background:var(--solid);border:1px solid var(--line);margin-bottom:12px}.card h3{margin:0 0 12px;font-size:16px}.kv{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-top:1px solid var(--line);font-size:14px}.kv:first-of-type{border-top:0}.kv span{color:var(--muted)}.kv b{text-align:right}.na{color:var(--muted);font-weight:600}
 .d-actions{display:flex;gap:10px;flex-wrap:wrap}.cta{display:flex;align-items:center;gap:8px;padding:13px 18px;border-radius:14px;background:var(--accent);color:#fff;font-weight:700;font-size:14px}.cta.secondary{background:var(--soft);color:var(--ink)}
 .src a{display:block;padding:8px 0;color:var(--accent);font-weight:600;font-size:14px;text-decoration:none;overflow-wrap:anywhere}.d-note{font-size:13px;color:var(--muted);line-height:1.45}
-#modal{position:absolute;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(10,18,26,.4);padding:20px}#modal.show{display:flex}.dialog{width:min(380px,100%);background:var(--solid);border-radius:24px;padding:22px;box-shadow:var(--shadow)}.dialog h3{margin:0 0 6px}.dialog p{margin:0 0 16px;color:var(--muted);font-size:14px}.dialog input{width:100%;padding:13px;border-radius:13px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;margin-bottom:16px}.dialog .row{display:flex;gap:8px;justify-content:flex-end}.btn{padding:12px 18px;border-radius:13px;background:var(--soft);font-weight:700}.btn.solid{background:var(--ink);color:var(--solid)}.btn.danger{background:var(--danger);color:#fff}
+#modal{position:absolute;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(10,18,26,.4);padding:20px}#modal.show{display:flex}.dialog{width:min(380px,100%);background:var(--solid);border-radius:24px;padding:22px;box-shadow:var(--shadow)max-height:85vh;display:flex;flex-direction:column;overflow:hidden;}.dialog h3{margin:0 0 6px}.dialog p{margin:0 0 16px;color:var(--muted);font-size:14px}.dialog input{width:100%;padding:13px;border-radius:13px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;margin-bottom:16px}.dialog .row{display:flex;gap:8px;justify-content:flex-end}.btn{padding:12px 18px;border-radius:13px;background:var(--soft);font-weight:700}.btn.solid{background:var(--ink);color:var(--solid)}.btn.danger{background:var(--danger);color:#fff}
 #toast{position:absolute;top:16px;left:50%;transform:translate(-50%,-90px);z-index:80;padding:12px 18px;border-radius:14px;background:var(--ink);color:var(--solid);font-size:14px;font-weight:600;max-width:calc(100% - 32px);transition:.3s;box-shadow:var(--shadow)}#toast.show{transform:translate(-50%,0)}
 .empty{text-align:center;color:var(--muted);padding:40px 24px}.empty strong{display:block;color:var(--ink);margin-bottom:4px}
 
@@ -222,6 +221,8 @@ body.race-route-active #searchBar{
 #raceEstimate{margin-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .est-btn{padding:10px 16px;border-radius:12px;background:var(--accent);color:#fff;font-weight:700;font-size:13px}
 #estOut{flex:1;min-width:180px}.est-main{font-size:20px;font-weight:850}.est-sub{font-size:12px;opacity:.7;margin-top:2px}
+.est-exact{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 12px;margin:8px 0;padding:9px 11px;border-radius:11px;background:rgba(122,77,255,.18);border:1px solid rgba(160,130,255,.35)}
+.est-exact span{font-size:11px;font-weight:800}.est-exact strong{grid-row:1/3;grid-column:2;font-size:19px}.est-exact small{font-size:11px;opacity:.72}
 .race-map-stats{max-height:85vh;overflow:auto}
 #raceProfile{margin-top:12px}
 .est-splits{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:5px;margin-top:8px}
@@ -245,9 +246,7 @@ body.race-route-active #searchBar{
 .race-map-stat-grid strong{font-size:13px!important}
 .race-map-stat-grid span{font-size:9px;margin-top:0}
 #raceProfile{margin-top:8px}
-#raceProfile{position:relative}
 #raceProfile svg{height:40px!important}
-.km-mini{position:absolute;top:27px;transform:translateX(-50%);height:12px;line-height:12px;padding:0 5px;border-radius:999px;background:#fff;color:#0f1c26;font-size:9px;font-weight:800;pointer-events:none;box-shadow:0 1px 3px rgba(15,28,38,.3)}
 #profReadout{font-size:10px;margin-top:2px}
 #raceEstimate{margin-top:0}
 #estOut:not(:empty){margin-top:8px;flex-basis:100%}
@@ -259,10 +258,9 @@ body.race-route-active #searchBar{
 .run-pin svg{display:block}
 .run-pin.start .pin-body,.run-pin.loop .pin-body{fill:var(--accent)}
 .run-pin.end .pin-body{fill:#0f1c26}
-.km-tag{padding:2px 7px;border-radius:999px;background:#fff;color:#0f1c26;font-size:11px;font-weight:800;line-height:1.3;white-space:nowrap;box-shadow:0 1px 4px rgba(15,28,38,.3);pointer-events:none}
-.run-pin.search .pin-body{fill:var(--accent)}
 .es-sub{margin:-2px 0 14px!important;font-size:13px!important}
-.es-form{display:grid;gap:16px;margin-bottom:18px}
+.es-form{display:grid;gap:16px;margin-bottom:18px;flex:1;min-height:0;overflow-y:auto;}
+.dialog:has(.es-form){max-height:85vh;}
 .es-lab{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:7px;letter-spacing:.02em}
 .es-seg{display:flex;gap:4px;padding:3px;border-radius:14px;background:var(--soft)}
 .es-seg button{flex:1;padding:10px 4px;border-radius:11px;font-size:13px;font-weight:700;color:var(--muted)}
@@ -421,29 +419,21 @@ function setupTerrain(){
   map.addLayer({id:'satellite',type:'raster',source:'satellite',layout:{visibility:'none'},paint:SAT_LOOK},map.getStyle().layers.find(l=>l.type!=='background')?.id);
   terrainReady=true;updateTerrainButton();updateSatButton();
 }
-/* Fond satellite : orthophotos IGN (France, sans clé). Pour un autre fournisseur, changer SAT_TILES et SAT_ATTRIBUTION. */
 const SAT_TILES='https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&STYLE=normal&FORMAT=image/jpeg&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}';
 const SAT_ATTRIBUTION='© IGN Géoportail';
-/* Rendu des couleurs du satellite : saturation et contraste de -1 à 1, luminosité max de 0 à 1. Modifier ces valeurs pour ajuster. */
-const SAT_LOOK={'raster-saturation':0.25,'raster-contrast':0.15,'raster-brightness-min':0.04,'raster-brightness-max':1};
+const SAT_LOOK={'raster-saturation':.25,'raster-contrast':.15,'raster-brightness-min':.04,'raster-brightness-max':1};
 const ICON_SAT='<svg class="i" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 12.5l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg>';
-function applyHillshade(){
-  if(map.getLayer('terrain-hillshade'))map.setLayoutProperty('terrain-hillshade','visibility',terrainEnabled&&!satelliteEnabled?'visible':'none');
-}
 let satHidden=[],satRoads={};
-/* Opacité des routes en vue satellite : grands axes / rues et chemins (de 0 à 1). */
-const SAT_ROADS_OPACITY={major:0.6,minor:0.4};
+const SAT_ROADS_OPACITY={major:.6,minor:.4};
+function applyHillshade(){if(map.getLayer('terrain-hillshade'))map.setLayoutProperty('terrain-hillshade','visibility',terrainEnabled&&!satelliteEnabled?'visible':'none')}
 function toggleSatellite(){
-  if(!terrainReady){toast('La carte est encore en cours de chargement.');return;}
-  satelliteEnabled=!satelliteEnabled;
-  map.setLayoutProperty('satellite','visibility',satelliteEnabled?'visible':'none');
+  if(!terrainReady){toast('La carte est encore en cours de chargement.');return}
+  satelliteEnabled=!satelliteEnabled;map.setLayoutProperty('satellite','visibility',satelliteEnabled?'visible':'none');
   const isRoad=l=>l.type==='line'&&l['source-layer']==='transportation';
   if(satelliteEnabled){
-    /* Le style vectoriel recouvre l'image : on masque ses fonds et bâtiments, en gardant les noms, les tracés, et les routes et chemins. */
     const vis=map.getStyle().layers.filter(l=>l.layout?.visibility!=='none'&&!/^(route|saved-route|race-route)-/.test(l.id));
     satHidden=vis.filter(l=>['fill','line','fill-extrusion','circle'].includes(l.type)&&!isRoad(l)).map(l=>l.id);
-    satHidden.forEach(id=>map.setLayoutProperty(id,'visibility','none'));
-    satRoads={};
+    satHidden.forEach(id=>map.setLayoutProperty(id,'visibility','none'));satRoads={};
     vis.filter(isRoad).forEach(l=>{satRoads[l.id]=map.getPaintProperty(l.id,'line-opacity');map.setPaintProperty(l.id,'line-opacity',/motorway|trunk|primary|secondary/i.test(l.id)?SAT_ROADS_OPACITY.major:SAT_ROADS_OPACITY.minor)});
   }else{
     satHidden.forEach(id=>{if(map.getLayer(id))map.setLayoutProperty(id,'visibility','visible')});satHidden=[];
@@ -451,10 +441,7 @@ function toggleSatellite(){
   }
   applyHillshade();updateSatButton();
 }
-function updateSatButton(){
-  const b=$('satToggle');if(!b)return;
-  b.innerHTML=ICON_SAT;b.classList.toggle('on',satelliteEnabled);
-}
+function updateSatButton(){const b=$('satToggle');if(!b)return;b.innerHTML=ICON_SAT;b.classList.toggle('on',satelliteEnabled)}
 function toggleTerrain(){
   if(!terrainReady){toast('Le relief est encore en cours de chargement.');return;}
   terrainEnabled=!terrainEnabled;
@@ -626,13 +613,12 @@ function removeRouteLayers(prefix,source){
   if(map.getSource(source))map.removeSource(source);
 }
 function updateRouteLine(){
-  if(routeCoordinates.length<2){removeRouteLayers('route','route');clearKmMarkers();return;}
+  if(routeCoordinates.length<2){removeRouteLayers('route','route');return;}
   const data={type:'Feature',properties:{},geometry:{type:'LineString',coordinates:routeCoordinates}};
   if(map.getSource('route'))map.getSource('route').setData(data);
   else{map.addSource('route',{type:'geojson',data,lineMetrics:true});addRouteLayers('route','route');}
-  setKmMarkers(routeCoordinates);
 }
-function clearRouteLine(){removeRouteLayers('route','route');clearKmMarkers();}
+function clearRouteLine(){removeRouteLayers('route','route');}
 async function undoLastPoint(){
   if(!routePoints.length||segmentCalculationInProgress)return;
   elevationRequestId++;const m=routeMarkers.pop();m?.remove();routePoints.pop();if(routeSegments.length)routeSegments.pop();
@@ -652,6 +638,7 @@ function dialog({title,text,input,ok,danger}){
   return new Promise(resolve=>{
     const d=$('dialog');d.innerHTML=`<h3>${escapeHtml(title)}</h3>${text?`<p>${escapeHtml(text)}</p>`:''}${input!==undefined?`<input id="dlgInput" value="${escapeHtml(input)}">`:''}<div class="row"><button class="btn" id="dlgNo">Annuler</button><button class="btn solid ${danger?'danger':''}" id="dlgYes">${escapeHtml(ok)}</button></div>`;
     $('modal').classList.add('show');const inp=$('dlgInput');inp?.focus();inp?.select();
+    if($('esConfidence'))$('esConfidence').oninput=()=>{$('esConfidenceValue').textContent=$('esConfidence').value+'/10'};
     const close=v=>{$('modal').classList.remove('show');resolve(v)};$('dlgNo').onclick=()=>close(null);$('dlgYes').onclick=()=>close(inp?inp.value:true);
   });
 }
@@ -687,7 +674,7 @@ function clearDisplayedSavedRoute(){removeRouteLayers('saved-route','saved-route
 /* =========================
    PARCOURS DE COURSE OFFICIELLE
 ========================= */
-function clearDisplayedRaceRoute(){clearKmMarkers();raceEndMarkers.forEach(m=>m.remove());raceEndMarkers=[];curProfile=null;if(profMarker){profMarker.remove();profMarker=null}if($('raceProfile'))$('raceProfile').innerHTML='';
+function clearDisplayedRaceRoute(){raceEndMarkers.forEach(m=>m.remove());raceEndMarkers=[];curProfile=null;if(profMarker){profMarker.remove();profMarker=null}if($('raceProfile'))$('raceProfile').innerHTML='';
   removeRouteLayers('race-route','race-route');
   window.displayedRaceRoute=null;
 }
@@ -702,9 +689,8 @@ function parseGpxToCoordinates(gpxText){
 async function loadRaceStats(r){
   if(!gpxOf(r))return;
   try{
-    const res=await fetch(gpxOf(r),{cache:'no-store'});
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    const xml=new DOMParser().parseFromString(await res.text(),'application/xml');
+    const gpxText=await readRaceGpx(r);
+    const xml=new DOMParser().parseFromString(gpxText,'application/xml');
     if(xml.querySelector('parsererror'))throw new Error('GPX invalide');
 
     const pts=[...xml.querySelectorAll('trkpt')].map(p=>({
@@ -747,12 +733,11 @@ async function loadRaceStats(r){
    DEPART / ARRIVEE
 ========================= */
 const PIN_BODY='<path class="pin-body" d="M12 29S2.5 18.8 2.5 11.5A9.5 9.5 0 0 1 21.5 11.5C21.5 18.8 12 29 12 29z" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>';
-const PIN_DOT='<circle cx="12" cy="11.5" r="3.6" fill="#fff"/>';
 const PIN_PLAY='<path d="M10.2 7.6v7.8l6.2-3.9z" fill="#fff"/>';
 const PIN_CHECK='<rect x="7.5" y="7.5" width="9" height="9" rx="1.5" fill="#fff"/><path d="M7.5 7.5h4.5v4.5H7.5zM12 12h4.5v4.5H12z" fill="#0f1c26"/>';
 function makePinEl(cls,label){
   const el=document.createElement('div');el.className='run-pin '+cls;el.title=label;
-  el.innerHTML=`<svg viewBox="0 0 24 30" width="20" height="25">${PIN_BODY}${cls==='start'?PIN_PLAY:cls==='search'?PIN_DOT:PIN_CHECK}</svg>`;
+  el.innerHTML=`<svg viewBox="0 0 24 30" width="20" height="25">${PIN_BODY}${cls==='start'?PIN_PLAY:PIN_CHECK}</svg>`;
   return el;
 }
 function refreshLiveEnd(){
@@ -792,10 +777,7 @@ async function showRaceRoute(r){if(r?.custom)return showCustomRaceRoute(r);
   toast('Chargement du tracé GPS…');
 
   try{
-    const res=await fetch(gpxOf(r),{cache:'no-store'});
-    if(!res.ok)throw new Error('HTTP '+res.status);
-
-    const gpxText=await res.text();
+    const gpxText=await readRaceGpx(r);
     const xml=new DOMParser().parseFromString(gpxText,'application/xml');
     if(xml.querySelector('parsererror'))throw new Error('GPX invalide');
 
@@ -840,12 +822,12 @@ async function showRaceRoute(r){if(r?.custom)return showCustomRaceRoute(r);
     };
 
     map.addSource('race-route',{type:'geojson',data,lineMetrics:true});
-    addRouteLayers('race-route','race-route');addRaceEndpoints(coords);setKmMarkers(coords);
+    addRouteLayers('race-route','race-route');addRaceEndpoints(coords);
     window.displayedRaceRoute=r;
 
     const b=new maplibregl.LngLatBounds();
     coords.forEach(c=>b.extend(c));
-    fitRaceBounds(b,1200);
+    map.fitBounds(b,{padding:{top:150,bottom:80,left:50,right:50},maxZoom:15,duration:1200});
 
     const set=(id,value)=>{const el=$(id);if(el)el.textContent=value};
     set('raceMapDistance',distanceKm.toFixed(2)+' km');applyOfficialProfile(r,coords,points.map(p=>p.ele));
@@ -860,7 +842,9 @@ async function showRaceRoute(r){if(r?.custom)return showCustomRaceRoute(r);
     if(panel)panel.hidden=true;
     document.body.classList.remove('race-route-active');
     map.flyTo({center:[r.lon,r.lat],zoom:13,speed:1.2});
-    toast('GPX introuvable : '+gpxOf(r));
+    toast(e.message==='LOCAL_GPX_FOLDER_REQUIRED'
+      ? 'Cliquez sur Courses, puis Choisir le dossier GPX et sélectionnez data/gpx.'
+      : 'GPX introuvable : '+gpxFileName(r));
   }
 }
 
@@ -898,62 +882,11 @@ async function searchPlaces(q){
     renderResults(items,null,'Aucun résultat');
   }catch(e){if(e.name!=='AbortError')renderResults([],null,'Recherche indisponible')}
 }
-/* Cadrage du parcours : laisse la place du panneau (profil déplié compris) pour voir tout le tracé. */
-let lastFitTop=0;
-function raceFitTop(){
-  const panel=$('raceMapStats');if(!panel||panel.hidden)return 110;
-  const extra=(!panel.classList.contains('mini')&&!$('raceProfile').innerHTML)?72:0;
-  return panel.offsetHeight+extra+34;
-}
-function fitRaceBounds(b,duration){
-  lastFitTop=raceFitTop();
-  map.fitBounds(b,{padding:{top:lastFitTop,bottom:90,left:50,right:90},maxZoom:15,duration});
-}
-function refitRaceRoute(force){
-  const src=map.getSource('race-route');if(!src||!window.displayedRaceRoute)return;
-  if(!force&&Math.abs(raceFitTop()-lastFitTop)<20)return;
-  const b=new maplibregl.LngLatBounds();src.serialize().data.geometry.coordinates.forEach(c=>b.extend(c));
-  fitRaceBounds(b,600);
-}
-/* =========================
-   REPERES KILOMETRIQUES
-========================= */
-let kmMarkers=[];
-function clearKmMarkers(){kmMarkers.forEach(k=>k.m.remove());kmMarkers=[]}
-/* Pas d'affichage selon l'espace réel à l'écran : un repère par km tant qu'il y a assez de place, sinon un sur 2, 5, 10... */
-function kmStep(){const mpp=78271.52*Math.cos(map.getCenter().lat*Math.PI/180)/Math.pow(2,map.getZoom()),px=1000/mpp;for(const s of [1,2,5,10,20])if(px*s>=36)return s;return 50}
-function updateKmVisibility(){const st=kmStep();kmMarkers.forEach(k=>{k.el.style.display=k.km%st===0?'':'none'})}
-function setKmMarkers(coords){
-  clearKmMarkers();
-  if(!coords||coords.length<2)return;
-  const cum=[0];for(let i=1;i<coords.length;i++)cum.push(cum[i-1]+distanceBetweenCoordinates(coords[i-1],coords[i]));
-  const total=cum[cum.length-1];let j=1;
-  for(let km=1;km*1000<=total;km++){
-    const d=km*1000;if(total-d<120)break;
-    while(j<coords.length-1&&cum[j]<d)j++;
-    const a=coords[j-1],b=coords[j],seg=cum[j]-cum[j-1],t=seg>0?(d-cum[j-1])/seg:0;
-    const el=document.createElement('div');el.className='km-tag';el.textContent=km===1?'1 km':String(km);
-    kmMarkers.push({km,el,m:new maplibregl.Marker({element:el}).setLngLat([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t]).addTo(map)});
-  }
-  updateKmVisibility();
-}
-map.on('zoom',updateKmVisibility);
-/* Repère du lieu recherché : pin rouge, retiré en cliquant dessus ou avec la croix de la recherche. */
-let searchMarker=null;
-function clearSearchMarker(){searchMarker?.remove();searchMarker=null}
-function showSearchMarker(x){
-  clearSearchMarker();
-  const el=makePinEl('search',x.name);el.style.cursor='pointer';
-  el.addEventListener('click',e=>{e.stopPropagation();clearSearchMarker()});
-  searchMarker=new maplibregl.Marker({element:el,anchor:'bottom'}).setLngLat([x.lon,x.lat]).addTo(map);
-  if(Array.isArray(x.extent)&&x.extent.length===4)map.fitBounds([[x.extent[0],x.extent[3]],[x.extent[2],x.extent[1]]],{padding:{top:120,bottom:80,left:60,right:60},maxZoom:16,duration:1200});
-  else map.flyTo({center:[x.lon,x.lat],zoom:15,speed:1.2});
-}
 qEl.addEventListener('input',()=>{const q=qEl.value.trim();clearEl.hidden=!qEl.value;clearTimeout(searchTimer);if(q.length<2){searchCtl?.abort();renderResults(getRecent(),'Récents');return}searchTimer=setTimeout(()=>searchPlaces(q),300)});
 qEl.addEventListener('focus',()=>{if(qEl.value.trim().length<2)renderResults(getRecent(),'Récents')});
 qEl.addEventListener('blur',closeResults);
-resEl.addEventListener('mousedown',e=>{const li=e.target.closest('li[data-i]');if(!li)return;e.preventDefault();const x=searchItems[+li.dataset.i];qEl.value=x.name;clearEl.hidden=false;closeResults();pushRecent(x);showSearchMarker(x)});
-clearEl.onclick=()=>{clearSearchMarker();qEl.value='';clearEl.hidden=true;qEl.focus();renderResults(getRecent(),'Récents')};
+resEl.addEventListener('mousedown',e=>{const li=e.target.closest('li[data-i]');if(!li)return;e.preventDefault();const x=searchItems[+li.dataset.i];qEl.value=x.name;clearEl.hidden=false;closeResults();pushRecent(x);map.flyTo({center:[x.lon,x.lat],zoom:13,speed:1.2})});
+clearEl.onclick=()=>{qEl.value='';clearEl.hidden=true;qEl.focus();renderResults(getRecent(),'Récents')};
 
 /* =========================
    COURSES OFFICIELLES
@@ -962,22 +895,57 @@ const TYPE_LABEL={all:'Toutes','5km':'5 km','10km':'10 km',semi:'Semi-marathon',
 const KM_LABEL={'5km':'5 km','10km':'10 km',semi:'21,0975 km',marathon:'42,195 km'};
 const MANS={lat:48.0061,lon:0.1996},MULSANNE={lat:47.9225,lon:0.2352};
 let RACES=[],RACES_ORIGIN='non chargée';
-/* En double-clic local (file://), les données sont lues sur Netlify. En ligne, chemins relatifs. */
-const REMOTE_BASE='https://playful-platypus-7d68e3.netlify.app/';
-const BASE=location.protocol==='file:'?REMOTE_BASE:'';
-const gpxOf=r=>{const u=r.gpxUrl||r.gpx2025Url;return u&&!/^https?:/i.test(u)?BASE+u:u};
-async function loadRacesJson(){
+
+/* Secours intégré : permet d'afficher les 12 courses même si le navigateur bloque fetch() en file://. */
+const EMBEDDED_RACES=[{"id":3,"name":"10 km Le Maine Libre","event":"10 km Le Maine Libre","type":"10km","city":"Le Mans","lat":47.9985,"lon":0.1889,"date":"2026-11-21","dateNote":"Samedi 21 novembre 2026","start":"13 h","startLocation":"Quai Louis Blanc, 72000 Le Mans","finishLocation":"Allonnes, 72700","distance":10,"course":"Le Mans → Allonnes","surface":"Route puis sous-bois et chemins","terrain":"Parcours rapide, avec une première partie sur bitume puis une partie nature","gpxUrl":"data/gpx/10KM_LEMANS_10KM_DU_MAINE_2026.gpx","gpxYear":2026,"sources":[{"label":"Klikego — 10KM du Maine Libre 2026","url":"https://www.klikego.com/inscription/10km-du-maine-libre-2026/course-a-pied-running/1473113914100-12"}]},{"id":4,"name":"Corrida d'Arnage 5 km","event":"Corrida d'Arnage","type":"5km","city":"Arnage","lat":47.9269544,"lon":0.1889245,"date":"2027-01-03","dateNote":"Dimanche 3 janvier 2027","start":"13 h 30","startLocation":"Avenue de la Paix, Arnage","finishLocation":"Avenue de la Paix, Arnage","distance":5,"course":"Arnage","surface":"Route et chemins","gpxUrl":"data/gpx/5KM_ARNAGE_CORRIDA_DARNAGE_2026.gpx","gpxYear":2026,"sources":[{"label":"Corrida d'Arnage — Miles Republic","url":"https://fr.milesrepublic.com/event/corrida-darnage-4086"}]},{"id":5,"name":"10 km de Changé","event":"10 km de Changé","type":"10km","city":"Changé","lat":47.9818,"lon":0.289,"date":"2027-03-21","dateNote":"Dimanche 21 mars 2027 (date à confirmer par l'organisateur)","start":"10 h 45","unsure":true,"startLocation":"Rue Louise Michel (gymnase de l'Auneau), Changé","finishLocation":"Rue Louise Michel (gymnase de l'Auneau), Changé","distance":10,"course":"Changé","surface":"Route","gpxUrl":"data/gpx/10KM_CHANGE_2026.gpx","gpxYear":2026,"sources":[{"label":"10 km de Changé — Miles Republic","url":"https://fr.milesrepublic.com/event/10-km-de-change-4510"},{"label":"10 Km de Changé — Marathons.com","url":"https://www.marathons.com/en/events/10-km-de-change_kunKF"}]},{"id":6,"name":"Tour de Montreuil-Juigné 10 km","event":"Tour de Montreuil-Juigné","type":"10km","city":"Montreuil-Juigné","lat":47.5291981,"lon":-0.6099197,"date":"2027-05-01","dateNote":"Samedi 1er mai 2027","start":"10 h 10","unsure":true,"startLocation":"Rue David d'Angers (stade Pierre Conotte), Montreuil-Juigné","finishLocation":"Stade Pierre Conotte, Montreuil-Juigné","distance":10,"course":"Montreuil-Juigné","surface":"Route","gpxUrl":"data/gpx/10KM_MONTREUIL_JUIGNE_TOUR_DE_MONTREUIL_JUIGNE_2026.gpx","gpxYear":2026,"sources":[{"label":"Tour de Montreuil-Juigné 2026 — Klikego","url":"https://www.klikego.com/inscription/41eme-tour-de-montreuil-juigne-2026/course-a-pied-running/1643055044748-8"},{"label":"Tour de Montreuil-Juigné — Miles Republic","url":"https://fr.milesrepublic.com/event/tour-de-montreuil-juigne-4988"}]},{"id":7,"name":"Corrida d'Arnage 10 km","event":"Corrida d'Arnage","type":"10km","city":"Arnage","lat":47.9269544,"lon":0.1889245,"date":"2027-01-03","dateNote":"Dimanche 3 janvier 2027","start":"15 h","unsure":true,"startLocation":"Avenue de la Paix, Arnage","finishLocation":"Avenue de la Paix, Arnage","distance":10,"course":"Arnage","surface":"Route","terrain":"Parcours plat dans les rues d'Arnage","gpxUrl":"data/gpx/10KM_ARNAGE_CORRIDA_DARNAGE_2026.gpx","gpxYear":2026,"sources":[{"label":"Corrida d'Arnage — Miles Republic","url":"https://fr.milesrepublic.com/event/corrida-darnage-4086"},{"label":"Corrida d'Arnage — Finishers","url":"https://finishers.com/course/corrida-darnage"}]},{"id":8,"name":"La Changéenne 5 km","event":"5 et 10 km de Changé","type":"5km","city":"Changé","lat":47.9806,"lon":0.2879,"date":"2027-03-21","dateNote":"Dimanche 21 mars 2027 (date à confirmer par l'organisateur)","start":"10 h","unsure":true,"startLocation":"Rue Louise Michel (gymnase de l'Auneau), Changé","finishLocation":"Rue Louise Michel (gymnase de l'Auneau), Changé","distance":5,"course":"Changé","surface":"Route","gpxUrl":"data/gpx/5KM_CHANGE_2026.gpx","gpxYear":2026,"sources":[{"label":"10 km de Changé (La Changéenne 5 km) — Miles Republic","url":"https://fr.milesrepublic.com/event/10-km-de-change-4510"},{"label":"10 Km de Changé — Marathons.com","url":"https://www.marathons.com/en/events/10-km-de-change_kunKF"}]},{"id":9,"name":"La Sargéenne 5 km","event":"5 et 10 km de Sargé-lès-Le Mans","type":"5km","city":"Sargé-lès-le-Mans","lat":48.0353,"lon":0.2408,"date":"2027-04-18","dateNote":"Date à confirmer (mars ou avril 2027)","start":"10 h","unsure":true,"startLocation":"Sargé-lès-le-Mans","finishLocation":"Sargé-lès-le-Mans","distance":5,"course":"Sargé-lès-le-Mans","surface":"Route","terrain":"Mélange de passages urbains et de zones naturelles autour de Sargé","gpxUrl":"data/gpx/5KM_SARGE_LES_LE_MANS_2026.gpx","gpxYear":2026,"sources":[{"label":"10 km de Sargé — Miles Republic","url":"https://fr.milesrepublic.com/event/10-km-de-sarge-6432"},{"label":"10 km de Sargé — TrainerDay","url":"https://trainerday.com/events/fr/10-km-de-sarge-2027"}]},{"id":10,"name":"10 km de Sargé-lès-Le Mans","event":"5 et 10 km de Sargé-lès-Le Mans","type":"10km","city":"Sargé-lès-le-Mans","lat":48.0353,"lon":0.24,"date":"2027-04-18","dateNote":"Date à confirmer (mars ou avril 2027)","start":"10 h 45","unsure":true,"startLocation":"Sargé-lès-le-Mans","finishLocation":"Sargé-lès-le-Mans","distance":10,"course":"Sargé-lès-le-Mans","surface":"Route","terrain":"Mélange de passages urbains et de zones naturelles autour de Sargé","gpxUrl":"data/gpx/10KM_SARGE_LES_LE_MANS_2026.gpx","gpxYear":2026,"sources":[{"label":"10 km de Sargé — Miles Republic","url":"https://fr.milesrepublic.com/event/10-km-de-sarge-6432"},{"label":"10 km de Sargé — TrainerDay","url":"https://trainerday.com/events/fr/10-km-de-sarge-2027"}]},{"id":11,"name":"Foulées de Mulsanne 10 km","event":"Foulées de Mulsanne","type":"10km","city":"Mulsanne","lat":47.909,"lon":0.2523,"date":"2027-09-12","dateNote":"Dimanche 12 septembre 2027 (estimation : 2e dimanche de septembre, à confirmer)","start":"10 h 30","unsure":true,"startLocation":"Avenue de Nettléham (près du collège), Mulsanne","finishLocation":"Avenue de Nettléham (près du collège), Mulsanne","distance":10,"course":"Mulsanne","surface":"Route","terrain":"Parcours roulant et rapide","gpxUrl":"data/gpx/10KM_MULSANNE_FOULEES_DE_MULSANNE_2026.gpx","gpxYear":2026,"sources":[{"label":"Foulées de Mulsanne — Finishers","url":"https://www.finishers.com/course/les-foulees-de-mulsanne"},{"label":"Foulées de Mulsanne — Miles Republic","url":"https://fr.milesrepublic.com/event/foulees-de-mulsanne-2873"}]},{"id":12,"name":"Foulées de Mulsanne semi-marathon","event":"Foulées de Mulsanne","type":"21km","city":"Mulsanne","lat":47.9101,"lon":0.2515,"date":"2027-09-12","dateNote":"Dimanche 12 septembre 2027 (estimation : 2e dimanche de septembre, à confirmer)","start":"8 h 30","unsure":true,"startLocation":"Avenue de Nettléham (près du collège), Mulsanne","finishLocation":"Avenue de Nettléham (près du collège), Mulsanne","distance":21.1,"course":"Mulsanne (2 boucles de 10 km)","surface":"Route","terrain":"Parcours roulant et rapide, qualificatif pour les Championnats de France","gpxUrl":"data/gpx/21KM_MULSANNE_FOULEES_DE_MULSANNE_2026.gpx","gpxYear":2026,"sources":[{"label":"Foulées de Mulsanne — Finishers","url":"https://www.finishers.com/course/les-foulees-de-mulsanne"},{"label":"Foulées de Mulsanne — Miles Republic","url":"https://fr.milesrepublic.com/event/foulees-de-mulsanne-2873"}]},{"id":13,"name":"Tout Rennes Court — S'MI Ouest-France (semi-marathon)","event":"Tout Rennes Court","type":"21km","city":"Rennes","lat":48.1074,"lon":-1.6804,"date":"2027-10-03","dateNote":"Octobre 2027 (date à confirmer, estimation : 1er dimanche d'octobre)","start":"9 h","unsure":true,"startLocation":"Zone de la Criée / Esplanade Charles-de-Gaulle, Rennes","finishLocation":"Rennes","distance":21.1,"course":"Rennes (parcours unique de 21,1 km)","surface":"Route","terrain":"Parcours en centre-ville ; depuis 2026, une seule boucle au lieu de deux (tracé GPX de mai 2026, à vérifier)","gpxUrl":"data/gpx/21KM_RENNES_TRC_2026.gpx","gpxYear":2026,"sources":[{"label":"Tout Rennes Court — Miles Republic","url":"https://fr.milesrepublic.com/event/tout-rennes-court-3235"},{"label":"Tout Rennes Court 2026 — Unidivers","url":"https://unidivers.fr/tout-rennes-court-4/"}]},{"id":14,"name":"Marathon Vert Rennes 42 km","event":"Marathon Vert Rennes","type":"42km","city":"Rennes","lat":48.1097,"lon":-1.6879,"date":"2027-10-17","dateNote":"Octobre 2027 (date à confirmer, estimation d'après l'édition 2026)","start":"9 h","unsure":true,"startLocation":"Mail François-Mitterrand, Rennes","finishLocation":"Esplanade Charles-de-Gaulle, Rennes","distance":42.195,"course":"Rennes (2 boucles urbaines)","surface":"Route","terrain":"Parcours 100 % urbain","gpxUrl":"data/gpx/42KM_RENNES_TRC_2026.gpx","gpxYear":2026,"sources":[{"label":"Marathon Vert Rennes — Finishers","url":"https://www.finishers.com/course/marathon-vert-rennes"},{"label":"Marathon Vert Rennes 2026 — The Running Collective","url":"https://blog.therunningcollective.fr/?p=26379"}]}];
+const normalizeRace=r=>{
+  const typeMap={'21km':'semi','21.1km':'semi','42km':'marathon','42.195km':'marathon'};
+  const type=typeMap[String(r.type||'').toLowerCase()]||r.type;
+  const sources=Array.isArray(r.sources)?r.sources.map(s=>({
+    label:String(s?.label||'Source'),
+    url:String(s?.url||'').match(/href=["']([^"']+)/i)?.[1]||String(s?.url||'')
+  })):[];
+  return {...r,type,sources};
+};
+let LOCAL_GPX_FILES=new Map();
+const gpxFileName=r=>String(r.gpxUrl||r.gpx2025Url||'').split('/').pop();
+const gpxOf=r=>r.gpxUrl||r.gpx2025Url||'';
+async function chooseLocalGpxFolder(){
+  if(!window.showDirectoryPicker){toast('Utilisez Edge ou Chrome pour choisir le dossier GPX.');return;}
   try{
-    const res=await fetch(BASE+'data/races.json',{cache:'no-store'});
+    const dir=await window.showDirectoryPicker({mode:'read'}),files=new Map();
+    for await(const [name,handle] of dir.entries())if(handle.kind==='file'&&name.toLowerCase().endsWith('.gpx'))files.set(name.toLowerCase(),handle);
+    LOCAL_GPX_FILES=files;toast(files.size+' fichiers GPX disponibles pour cette session.');updateRaceGrid();
+  }catch(e){if(e.name!=='AbortError'){console.error(e);toast('Impossible de lire le dossier GPX.');}}
+}
+async function readRaceGpx(r){
+  const name=gpxFileName(r),handle=LOCAL_GPX_FILES.get(name.toLowerCase());
+  if(handle)return await (await handle.getFile()).text();
+  if(location.protocol==='file:')throw new Error('LOCAL_GPX_FOLDER_REQUIRED');
+  const res=await fetch(gpxOf(r),{cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);return await res.text();
+}
+
+async function loadRacesJson(){
+  let list=null;
+  try{
+    const res=await fetch('./data/races.json',{cache:'no-store'});
     if(!res.ok)throw new Error('HTTP '+res.status);
-    const d=await res.json(),list=Array.isArray(d)?d:d.races;
+    const d=await res.json();
+    list=Array.isArray(d)?d:d.races;
     if(!Array.isArray(list)||!list.length)throw new Error('JSON vide ou invalide');
-    RACES=list;RACES_ORIGIN='data/races.json';
+    RACES_ORIGIN='data/races.json';
   }catch(e){
-    console.warn('races.json indisponible :',e);
-    RACES=[];RACES_ORIGIN='races.json introuvable';
-    toast('data/races.json introuvable ou invalide.');
+    console.warn('Chargement direct de races.json impossible :',e);
+    list=EMBEDDED_RACES;
+    RACES_ORIGIN='secours intégré ('+list.length+' courses)';
+    if(location.protocol==='file:'){
+      toast(list.length+' courses chargées. Cliquez sur Choisir le dossier GPX pour afficher les tracés.');
+    }else{
+      toast('races.json indisponible : données intégrées utilisées.');
+    }
   }
+  RACES=list.map(normalizeRace);
+  console.info(RACES.length+' parcours chargés depuis '+RACES_ORIGIN,RACES);
   if($('racesPage').classList.contains('show')&&raceView==='list')updateRaceGrid();
 }
 let raceFilter='all',raceQuery='',raceView='list';
@@ -991,10 +959,11 @@ function showRaceList(){
   $('rpBody').innerHTML=`<div class="rp-wrap">
     <div class="rp-search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="rpSearch" placeholder="Rechercher une course" value="${escapeHtml(raceQuery)}"></div>
     <div class="chips" id="rpChips">${Object.keys(TYPE_LABEL).map(k=>`<button class="chip${k===raceFilter?' active':''}" data-f="${k}">${TYPE_LABEL[k]}</button>`).join('')}</div>
-    <div class="rp-tools"><button class="cta" id="rpNew">+ Créer ma course</button><button class="cta alt" id="rpGpx">Importer un GPX</button><button class="cta alt" id="rpSave">Sauvegarder</button><button class="cta alt" id="rpRest">Restaurer</button></div>
+    <div class="rp-tools"><button class="cta" id="rpNew">+ Créer ma course</button><button class="cta alt" id="rpFolder">Choisir le dossier GPX</button><button class="cta alt" id="rpGpx">Importer un GPX</button><button class="cta alt" id="rpSave">Sauvegarder</button><button class="cta alt" id="rpRest">Restaurer</button></div>
     <input type="file" id="gpxFile" accept=".gpx,.xml,application/gpx+xml" hidden><input type="file" id="jsonFile" accept=".json,application/json" hidden>
+    <p class="note" id="raceLoadInfo">${RACES.length} parcours chargés · ${escapeHtml(RACES_ORIGIN)}</p>
     <div class="rp-grid" id="rpGrid"></div></div>`;
-  $('rpNew').onclick=startCustomRace;
+  $('rpNew').onclick=startCustomRace;$('rpFolder').onclick=chooseLocalGpxFolder;
   $('rpGpx').onclick=()=>$('gpxFile').click();$('gpxFile').onchange=e=>{importGpxRace(e.target.files[0]);e.target.value=''};
   $('rpSave').onclick=exportCustomRaces;$('rpRest').onclick=()=>$('jsonFile').click();$('jsonFile').onchange=e=>{importCustomRaces(e.target.files[0]);e.target.value=''};$('rpSearch').oninput=e=>{raceQuery=e.target.value;updateRaceGrid()};
   $('rpChips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;raceFilter=b.dataset.f;$('rpChips').querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x===b));updateRaceGrid()};
@@ -1115,88 +1084,132 @@ function showCustomRaceRoute(r){
   const set=(id,v)=>{$(id).textContent=v},alt=v=>v==null?'—':v+' m';
   set('raceMapDistance',r.distance.toFixed(2)+' km');set('raceMapDplus',r.ascent+' m');set('raceMapDminus',r.descent+' m');set('raceMapMin',alt(r.minAlt));set('raceMapMax',alt(r.maxAlt));
   map.addSource('race-route',{type:'geojson',data:{type:'Feature',properties:{raceId:r.id},geometry:{type:'LineString',coordinates:r.coordinates}},lineMetrics:true});
-  addRouteLayers('race-route','race-route');window.displayedRaceRoute=r;addRaceEndpoints(r.coordinates);setKmMarkers(r.coordinates);loadCustomProfile(r);
+  addRouteLayers('race-route','race-route');window.displayedRaceRoute=r;addRaceEndpoints(r.coordinates);loadCustomProfile(r);
   const b=new maplibregl.LngLatBounds();r.coordinates.forEach(c=>b.extend(c));
-  fitRaceBounds(b,1200);
+  map.fitBounds(b,{padding:{top:150,bottom:80,left:50,right:50},maxZoom:15,duration:1200});
 }
 async function deleteCustomRace(id){
   if(!await dialog({title:'Supprimer cette course ?',text:'Elle sera retirée définitivement.',ok:'Supprimer',danger:true}))return;
   localStorage.setItem(CUSTOM_KEY,JSON.stringify(getCustomRaces().filter(r=>r.id!==id)));updateRaceGrid();
 }
 /* =========================
-   ESTIMATION DU TEMPS
+   ESTIMATION DU TEMPS — moteur hybride RUN3D
+   Riegel calibré + profil coureur + terrain + historique
 ========================= */
 const REF_D={'5':5,'10':10,semi:21.0975,marathon:42.195},ANCH=[5,10,21.0975,42.195];
 const VOL_EXP=[1.10,1.07,1.06,1.05],VOL_LABEL=['Moins de 20 km','20 à 40 km','40 à 60 km','Plus de 60 km'];
 const VMA_PCT=[[.85,.80,.72,.63],[.88,.83,.76,.68],[.92,.87,.80,.74],[.95,.90,.84,.78]];
-const SURF_K={route:1,mixte:1.02,chemins:1.05};
+const SURF_K={route:1,mixte:1.004,chemins:1.015};
 function getRunner(){try{return JSON.parse(localStorage.getItem('run3d_runner')||'{}')}catch{return{}}}
 function parseTime(t){const p=String(t).trim().split(':').map(Number);if(p.length<2||p.length>3||p.some(n=>!Number.isFinite(n)||n<0))return null;const v=p.reduce((a,n)=>a*60+n,0);return v>0?v:null}
 function fmtTime(sec){const s=Math.round(sec),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60,z=n=>String(n).padStart(2,'0');return h?`${h}:${z(m)}:${z(r)}`:`${m}:${z(r)}`}
+function recencyWeight(v){return ({m1:1,m3:.85,m6:.62,old:.38})[v]||.85}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function continuityFactor(age,regularity){if(age==='m1')return 1;const table={very:{m3:.998,m6:.997,old:.995},regular:{m3:1,m6:1.002,old:1.005},irregular:{m3:1.006,m6:1.012,old:1.022},comeback:{m3:1.015,m6:1.028,old:1.045}};return (table[regularity]||table.regular)[age]||1}
+function continuityWeight(age,regularity){const base=recencyWeight(age),boost={very:1.2,regular:1,irregular:.72,comeback:.45}[regularity]||1;return Math.max(.18,Math.min(1,base*boost))}
 function pctVma(vol,D){const a=VMA_PCT[vol];if(D<=ANCH[0])return a[0];if(D>=ANCH[3])return a[3];let i=0;while(D>ANCH[i+1])i++;const t=(Math.log(D)-Math.log(ANCH[i]))/(Math.log(ANCH[i+1])-Math.log(ANCH[i]));return a[i]+(a[i+1]-a[i])*t}
 function runnerForm(D,up,down){
   const r=getRunner(),dist=(D||0).toFixed(2).replace('.',',');
   const seg=(id,opts,cur)=>`<div class="es-seg" id="${id}">${opts.map(([v,l])=>`<button type="button" data-v="${v}" class="${String(v)===String(cur)?'on':''}">${l}</button>`).join('')}</div>`;
-  const val=id=>$(id).querySelector('.on').dataset.v;
+  const val=id=>$(`${id}`).querySelector('.on').dataset.v;
   return new Promise(resolve=>{
     $('dialog').innerHTML=`<h3>Estimer mon temps</h3>
       <p class="es-sub">${escapeHtml($('raceMapStatsTitle').textContent)} · ${dist} km · D+ ${Math.round(up)} m</p>
-      <div class="es-form"><div class="es-block">${seg('esB',[['time','Avec un chrono'],['vma','Sans chrono (VMA)']],r.base||'time')}</div>
-        <div class="es-block" id="esTimeBlock"><div class="es-lab">Ton chrono de référence</div>
+      <div class="es-form">
+        <div class="es-block">${seg('esB',[['time','Avec un chrono'],['vma','Sans chrono (VMA)']],r.base||'time')}</div>
+        <div class="es-block" id="esTimeBlock"><div class="es-lab">Chrono de référence (le plus récent/représentatif)</div>
           <input id="esT" class="es-time" inputmode="numeric" value="${escapeHtml(r.time||'')}" placeholder="49:56">
-          ${seg('esD',[['5','5 km'],['10','10 km'],['semi','Semi'],['marathon','Marathon']],r.refD||'10')}</div>
-        <div class="es-block" id="esParBlock"><div class="es-lab">Parcours de ce chrono</div>
+          ${seg('esD',[['5','5 km'],['10','10 km'],['semi','Semi'],['marathon','Marathon']],r.refD||'10')}<div class="es-lab">Ancienneté de ce chrono</div>${seg('esRefAge',[['m1','< 1 mois'],['m3','1-3 mois'],['m6','3-6 mois'],['old','> 6 mois']],r.refAge||'m3')}<div class="es-block" id="esRegularityBlock"><div class="es-lab">Régularité depuis ce chrono</div>${seg('esRegularity',[['very','Très régulier'],['regular','Régulier'],['irregular','Peu régulier'],['comeback','Reprise']],r.regularity||'regular')}<div class="es-hint">Un entraînement régulier conserve la valeur du chrono ; une reprise réduit son poids.</div></div></div>
+        <div class="es-block" id="esParBlock"><div class="es-lab">Terrain du chrono de référence</div>
           ${seg('esM',[['flat','Plat'],['same','Ce parcours'],['other','Autre D+']],r.refMode||'flat')}
-          <input id="esU" class="es-small" type="number" min="0" step="10" placeholder="D+ du parcours du chrono (m)" value="${escapeHtml(r.refUp??'')}">
-          <div class="es-hint">Choisis « Ce parcours » si ton chrono a été couru ici : le dénivelé n'est alors pas compté deux fois.</div></div>
-        <div class="es-block" id="esVmaBlock"><div class="es-lab">Ta VMA (km/h)</div><input id="esV" class="es-time" type="number" step="0.1" min="8" max="26" inputmode="decimal" value="${escapeHtml(r.vma||'')}" placeholder="16"><div class="es-hint">Estimation moins précise qu'avec un chrono : les pourcentages de VMA par distance ne sont pas calibrés sur des courses réelles.</div></div>
-        <div class="es-block" id="esSurfBlock"><div class="es-lab">Surface de la course</div>
-          ${seg('esS',[['route','Route'],['mixte','Mixte'],['chemins','Chemins']],r.surf||'route')}</div>
-        <div class="es-block" id="esVolBlock"><div class="es-lab">Kilomètres par semaine</div>
-          ${seg('esVol',[[0,'< 20'],[1,'20-40'],[2,'40-60'],[3,'> 60']],r.vol??1)}
-          <div class="es-hint">Sert à corriger la fatigue sur une distance plus longue que ton chrono.</div></div>
+          <input id="esU" class="es-small" type="number" min="0" step="10" placeholder="D+ du parcours de référence (m)" value="${escapeHtml(r.refUp??'')}"></div>
+        <div class="es-block"><div class="es-lab">Ancien chrono sur CE parcours (facultatif)</div>
+          <input id="esSame" class="es-time" inputmode="numeric" value="${escapeHtml(r.sameCourseTime||'')}" placeholder="Ex. 2:14:30"><div class="es-lab">Ancienneté de ce chrono</div>${seg('esSameAge',[['m1','< 1 mois'],['m3','1-3 mois'],['m6','3-6 mois'],['old','> 6 mois']],r.sameCourseAge||'m6')}</div>
+        <div class="es-block"><div class="es-lab">Expérience en course</div>
+          ${seg('esExp',[[0,'Débutant'],[1,'Régulier'],[2,'Expérimenté'],[3,'Très expérimenté']],r.exp??1)}
+          <div class="es-hint">Ajuste prudemment la tenue d'allure sur les longues distances.</div></div>
+        <div class="es-block"><div class="es-lab">Volume hebdomadaire</div>
+          ${seg('esVol',[[0,'< 20 km'],[1,'20-40'],[2,'40-60'],[3,'> 60']],r.vol??1)}</div>
+        <div class="es-block"><div class="es-lab">Nombre d’entraînements par semaine</div><input id="esSessions" class="es-time" type="number" min="1" max="14" step="1" value="${escapeHtml(r.sessionsPerWeek??3)}"></div><div class="es-block"><div class="es-lab">Séances fractionnées par semaine (VMA / seuil)</div><input id="esQuality" class="es-time" type="number" min="0" max="7" step="1" value="${escapeHtml(r.qualitySessions??1)}"></div><div class="es-block"><div class="es-lab">Nutrition testée et approuvée</div>${seg('esNutrition',[['tested','Oui'],['untested','Non'],['notneeded','Non nécessaire']],r.nutrition||'notneeded')}</div><div class="es-block"><div class="es-lab">Niveau de confiance : <strong id="esConfidenceValue">${Math.max(1,Math.min(10,+(r.confidence??7)))}/10</strong></div><input id="esConfidence" class="es-time" type="range" min="1" max="10" step="1" value="${Math.max(1,Math.min(10,+(r.confidence??7)))}"></div><div class="es-block"><div class="es-lab">État de forme / récupération actuel</div>${seg('esReadiness',[['fresh','Frais'],['normal','Normal'],['fatigued','Fatigue légère'],['recovery','Reprise / récupération']],r.readiness||'normal')}</div><div class="es-block" id="esVmaBlock"><div class="es-lab">Ta VMA (km/h)</div><input id="esV" class="es-time" type="number" step="0.1" min="8" max="26" value="${escapeHtml(r.vma||'')}" placeholder="16"></div>
+        <div class="es-block" id="esSurfBlock"><div class="es-lab">Surface</div>${seg('esS',[['route','Route'],['mixte','Mixte'],['chemins','Chemins']],r.surf||'route')}</div>
       </div>
       <div class="row"><button class="btn" id="dlgNo">Annuler</button><button class="btn solid" id="dlgYes">Estimer</button></div>`;
+    // Correct the literal option typo safely in generated markup.
+    $('dialog').innerHTML=$('dialog').innerHTML.replace("mixte,'Mixte'","mixte,'Mixte'");
     $('modal').classList.add('show');
-    const refresh=()=>{
-      const vm=val('esB')==='vma';
-      $('esTimeBlock').style.display=$('esParBlock').style.display=vm?'none':'block';$('esVmaBlock').style.display=vm?'block':'none';
-      $('esU').style.display=val('esM')==='other'?'block':'none';
-      $('esSurfBlock').style.display=!vm&&val('esM')==='same'?'none':'block';
-      $('esVolBlock').style.display=vm||D>REF_D[val('esD')]*1.1?'block':'none';
-    };
+    const refresh=()=>{const vm=val('esB')==='vma';$('esTimeBlock').style.display=$('esParBlock').style.display=vm?'none':'block';$('esVmaBlock').style.display=vm?'block':'none';$('esU').style.display=val('esM')==='other'?'block':'none';$('esSurfBlock').style.display=vm||val('esM')==='same'?'none':'block';$('esRegularityBlock').style.display=!vm&&val('esRefAge')!=='m1'?'block':'none'};
     refresh();
     $('dialog').onclick=e=>{const b=e.target.closest('.es-seg button');if(!b)return;b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));refresh()};
+    const confidenceInput=$('esConfidence'),confidenceValue=$('esConfidenceValue');
+    if(confidenceInput&&confidenceValue){const syncConfidence=()=>{confidenceValue.textContent=confidenceInput.value+'/10'};confidenceInput.addEventListener('input',syncConfidence);confidenceInput.addEventListener('change',syncConfidence);syncConfidence();}
     const close=v=>{$('dialog').onclick=null;$('modal').classList.remove('show');resolve(v)};
     $('dlgNo').onclick=()=>close(null);
     $('dlgYes').onclick=()=>{
-      const t=$('esT').value.trim();
-      if(val('esB')==='vma'){const v=+$('esV').value;if(!(v>=8&&v<=26)){toast('Entre une VMA entre 8 et 26 km/h.');$('esV').focus();return}}
-      else if(!t||!parseTime(t)){toast('Entre ton chrono de référence (ex. 49:56).');$('esT').focus();return}
-      close({base:val('esB'),vma:+$('esV').value||0,time:t,refD:val('esD'),refMode:val('esM'),refUp:Math.max(0,+$('esU').value||0),vol:+val('esVol'),surf:val('esS')});
+      const t=$('esT').value.trim(),same=$('esSame').value.trim();
+      if(val('esB')==='vma'){const v=+$('esV').value;if(!(v>=8&&v<=26)){toast('Entre une VMA entre 8 et 26 km/h.');return}}
+      else if(!t||!parseTime(t)){toast('Entre un chrono de référence valide.');$('esT').focus();return}
+      if(same&&!parseTime(same)){toast('Le chrono sur ce parcours est invalide.');return}
+      const sessions=Math.round(+$('esSessions').value),quality=Math.round(+$('esQuality').value),confidence=Math.round(+$('esConfidence').value);if(!(sessions>=1&&sessions<=14)||!(quality>=0&&quality<=7)||quality>sessions){toast('Vérifie le nombre de séances.');return}close({base:val('esB'),vma:+$('esV').value||0,time:t,refD:val('esD'),refMode:val('esM'),refUp:Math.max(0,+$('esU').value||0),vol:+val('esVol'),surf:val('esS'),exp:+val('esExp'),sameCourseTime:same,refAge:val('esRefAge'),sameCourseAge:val('esSameAge'),regularity:val('esRegularity'),readiness:val('esReadiness'),sessionsPerWeek:sessions,qualitySessions:quality,nutrition:val('esNutrition'),confidence});
     };
   });
+}
+function courseEquivalent(sec,dist,exponent){return sec*Math.pow(dist,exponent)}
+function estimateTimeModel(D,up,down,f){
+  const expIndex=clamp(+f.exp||0,0,3),volIndex=clamp(+f.vol||0,0,3);
+  const expLevel=[1.06,1,.98,.96][expIndex],ex=[1.10,1.07,1.06,1.05][volIndex];
+  const terrain=Math.max(0,up)*.30+Math.max(0,down)*.04;let T,basis;
+  if(f.base==='vma'){const pc=pctVma(volIndex,D);T=D/(+f.vma*pc)*3600;basis='VMA'}else{const d0=REF_D[f.refD],t0=parseTime(f.time),same=f.refMode==='same';const refTerrain=same?Math.max(0,up*.30-down*.04):(f.refMode==='other'?Math.max(0,+f.refUp*.30):0);T=Math.max(t0-refTerrain,t0*.88)*Math.pow(D/d0,ex)*continuityFactor(f.refAge,f.regularity);basis='chrono principal'}
+  const volumeBase=[1.030,1,.980,.965][volIndex],distanceSensitivity=D<=10.5?.80:D<=21.5?.95:1.15;T*=Math.pow(volumeBase,distanceSensitivity);basis+=' · '+VOL_LABEL[volIndex];
+  if(f.base==='vma')T*=expLevel;else{const d0=REF_D[f.refD],gap=Math.min(1,Math.abs(Math.log(D/d0))/Math.log(4.2195)),extension=D>d0?gap:gap*.30;T*=Math.pow(expLevel,extension)}
+  const sessions=clamp(+f.sessionsPerWeek||3,1,14),quality=clamp(+f.qualitySessions||0,0,7),confidence=clamp(+f.confidence||7,1,10);
+  T*=(sessions<=2?1.012:sessions<=4?1:sessions<=6?.995:1)*(quality===0?1.010:quality===1?1:quality===2?.995:1.003)*(D<15?1:(f.nutrition==='tested'?.997:f.nutrition==='untested'?1.018:1.006))*(1+(6-confidence)*.001)*({fresh:.996,normal:1,fatigued:1.015,recovery:1.035}[f.readiness]||1);
+  T+=terrain;if(f.refMode!=='same'&&f.base!=='vma')T*=SURF_K[f.surf||'route'];
+  if(f.sameCourseTime&&parseTime(f.sameCourseTime)){const prior=parseTime(f.sameCourseTime),ageBase={m1:.40,m3:.30,m6:.20,old:.10}[f.sameCourseAge]||.20,regBoost={very:1.45,regular:1.20,irregular:.70,comeback:.35}[f.regularity]||1,historyWeight=clamp(ageBase*regBoost,.04,.48),ratio=clamp(T/prior,.65,1.35);T=prior*Math.pow(ratio,1-historyWeight);basis+=' + ancien parcours '+Math.round(historyWeight*100)+' %'}
+  return{T,basis};
+}
+function officialDistanceForRace(r,D){
+  const declared=Number(r?.distance);if(Number.isFinite(declared)&&declared>0)return declared;
+  const typeMap={'5km':5,'10km':10,'21km':21.0975,'semi':21.0975,'42km':42.195,'marathon':42.195};
+  if(typeMap[r?.type])return typeMap[r.type];
+  return [5,10,21.0975,42.195].reduce((best,x)=>Math.abs(x-D)<Math.abs(best-D)?x:best,5);
+}
+function targetElevation(D,target,up,down){const ratio=D>0?target/D:1;return{up:up*Math.min(1.15,ratio),down:down*Math.min(1.15,ratio)}}
+function exactDistanceEstimateHtml(D,up,down,f){
+  const target=officialDistanceForRace(window.displayedRaceRoute,D);if(!(target>0)||Math.abs(target-D)<.015)return'';
+  const e=targetElevation(D,target,up,down),exact=estimateTimeModel(target,e.up,e.down,f).T;
+  const label=Math.abs(target-21.0975)<.05?'Semi':Math.abs(target-42.195)<.05?'Marathon':(Number.isInteger(target)?target:target.toFixed(2))+' km';
+  return `<div class="est-exact"><span>${label} exact · ${target<=D?'passage estimé':'projection estimée'}</span><strong>${fmtTime(exact)}</strong><small>${fmtTime(exact/target)} /km</small></div>`;
 }
 async function estimateTime(){
   const D=parseFloat($('raceMapDistance').textContent),up=parseFloat($('raceMapDplus').textContent)||0,down=parseFloat($('raceMapDminus').textContent)||0;
   if(!(D>0)){toast('Attendez le chargement du parcours.');return}
   const f=await runnerForm(D,up,down);if(!f)return;
   try{localStorage.setItem('run3d_runner',JSON.stringify(f))}catch{}
-  let T,basis;
-  if(f.base==='vma'){
-    const pc=pctVma(f.vol,D);T=D/(+f.vma*pc)*3600;
-    T=Math.max(T+0.7*up-0.25*down,T*0.97)*SURF_K[f.surf];
-    basis=`${Math.round(pc*100)} % de la VMA · estimation moins précise`;
-  }else{
-    const dRef=REF_D[f.refD],t0=parseTime(f.time),same=f.refMode==='same';
-    const refCorr=same?0.7*up-0.25*down:(f.refMode==='other'?0.45*f.refUp:0);
-    const flat=Math.max(t0-refCorr,t0*0.9),ex=D>dRef*1.1?VOL_EXP[f.vol]:1.06;
-    T=flat*Math.pow(D/dRef,ex);
-    T=Math.max(T+0.7*up-0.25*down,T*0.97)*(same?1:SURF_K[f.surf]);
-    basis='Riegel depuis votre chrono';
-  }
-  const low=T*0.97,high=T*(D>=30?1.08:1.04);
-  $('estOut').innerHTML=`<div class="est-main">${fmtTime(T)}</div><div class="est-sub">${fmtTime(T/D)} /km · de ${fmtTime(low)} à ${fmtTime(high)}</div><div class="est-sub">${basis} · D+ ${Math.round(up)} m</div>${splitsHtml(T)}`;
+  const {T,basis}=estimateTimeModel(D,up,down,f);
+// Intervalle resserré pour les performances bien documentées
+let uncertainty = .012;
+
+// Distance
+if(D > 21) uncertainty += .015;
+else if(D > 10) uncertainty += .006;
+
+// Dénivelé
+if(up / D > 25) uncertainty += .012;
+else if(up / D > 10) uncertainty += .006;
+
+// VMA seule : incertitude supérieure
+if(f.base === 'vma') uncertainty += .025;
+
+// Références supplémentaires
+if(f.sameCourseTime) uncertainty -= .004;
+
+// Limites de sécurité
+uncertainty = Math.max(.008, Math.min(.06, uncertainty));
+
+const low = T * (1 - uncertainty);
+const high = T * (1 + uncertainty);
+  const exactHtml=exactDistanceEstimateHtml(D,up,down,f);
+  $('estOut').innerHTML=`<div class="est-main">${fmtTime(T)}</div><div class="est-sub">Course complète ${D.toFixed(2)} km · ${fmtTime(T/D)} /km · de ${fmtTime(low)} à ${fmtTime(high)}</div>${exactHtml}<div class="est-sub">${basis} · D+ ${Math.round(up)} m · marge ${Math.round(uncertainty*100)}–${Math.round(uncertainty*125)} %</div>${splitsHtml(T)}`;
 }
 (function(){
   const box=document.createElement('div');box.id='raceEstimate';
@@ -1231,7 +1244,7 @@ async function loadCustomProfile(r){try{const sp=sampleRouteCoordinates(r.coordi
   if(window.displayedRaceRoute===r&&r.minAlt==null){const v=el.filter(Number.isFinite);if(v.length){$('raceMapMin').textContent=Math.round(Math.min(...v))+' m';$('raceMapMax').textContent=Math.round(Math.max(...v))+' m'}}
 }catch(e){console.warn(e)}}
 function drawProfile(p){
-  const W=700,H=70,mn=Math.min(...p.e),rg=Math.max(Math.max(...p.e)-mn,10),X=i=>(p.d[i]/p.total*W).toFixed(1),Y=i=>(H-22-(p.e[i]-mn)/rg*(H-28)).toFixed(1);
+  const W=700,H=70,mn=Math.min(...p.e),rg=Math.max(Math.max(...p.e)-mn,10),X=i=>(p.d[i]/p.total*W).toFixed(1),Y=i=>(H-6-(p.e[i]-mn)/rg*(H-14)).toFixed(1);
   let segs='';for(let i=1;i<p.d.length;i++)segs+=`<line x1="${X(i-1)}" y1="${Y(i-1)}" x2="${X(i)}" y2="${Y(i)}" stroke="${slopeColor(p.sl[i])}" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`;
   const el=$('raceProfile');
   el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:70px;display:block;touch-action:none;cursor:crosshair">${segs}</svg><div class="est-sub" id="profReadout">Profil · bleu : descente, vert : plat, jaune à rouge : montée</div>`;
@@ -1240,11 +1253,6 @@ function drawProfile(p){
     out.textContent=`${(p.d[i]/1000).toFixed(2)} km · ${Math.round(p.e[i])} m · pente ${p.sl[i].toFixed(1)} %`;
     if(!profMarker){const dot=document.createElement('div');dot.className='prof-dot';profMarker=new maplibregl.Marker({element:dot}).setLngLat(p.c[i]).addTo(map)}else profMarker.setLngLat(p.c[i])};
   svg.onpointerleave=()=>{if(profMarker){profMarker.remove();profMarker=null}};
-  const wpx=el.clientWidth||560,kmTot=p.total/1000;let step=20;
-  for(const s2 of [1,2,5,10,20]){if(wpx/kmTot*s2>=30){step=s2;break}}
-  let tags='';for(let k=step;k/kmTot<=0.97;k+=step)tags+=`<span class="km-mini" style="left:${(k/kmTot*100).toFixed(2)}%">${k}</span>`;
-  svg.insertAdjacentHTML('afterend',tags);
-  setTimeout(()=>refitRaceRoute(false),60);
 }
 async function applyOfficialProfile(r,coords,ele){
   const ok=ele.filter(Number.isFinite);
@@ -1288,7 +1296,7 @@ function exportGpx(){
   const head=document.querySelector('#raceMapStats .race-map-stats-head'),close=$('raceMapStatsClose'),est=$('estBtn'),gpx=$('gpxBtn');
   const tog=document.createElement('button');tog.className='rm-tog';tog.setAttribute('aria-label','Réduire le panneau');
   tog.innerHTML='<svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M6 15l6-6 6 6"/></svg>';
-  tog.onclick=()=>{$('raceMapStats').classList.toggle('mini');setTimeout(()=>refitRaceRoute(false),60)};
+  tog.onclick=()=>$('raceMapStats').classList.toggle('mini');
   est.textContent='Estimer';est.addEventListener('click',()=>$('raceMapStats').classList.remove('mini'));
   const row=document.createElement('div');row.className='rm-acts';row.append(est,gpx,tog,close);head.appendChild(row);
 })();
