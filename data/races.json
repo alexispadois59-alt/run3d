@@ -1,0 +1,360 @@
+[
+  {
+    "id": 3,
+    "name": "10 km Le Maine Libre",
+    "event": "10 km Le Maine Libre",
+    "type": "10km",
+    "city": "Le Mans",
+    "lat": 47.9985,
+    "lon": 0.1889,
+    "date": "2026-11-21",
+    "dateNote": "Samedi 21 novembre 2026",
+    "start": "13 h",
+    "startLocation": "Quai Louis Blanc, 72000 Le Mans",
+    "finishLocation": "Allonnes, 72700",
+    "distance": 10,
+    "course": "Le Mans → Allonnes",
+    "surface": "Route puis sous-bois et chemins",
+    "terrain": "Parcours rapide, avec une première partie sur bitume puis une partie nature",
+    "gpxUrl": "data/gpx/10KM_LEMANS_10KM_DU_MAINE_2026.gpx",
+    "gpxYear": 2026,
+    "sources": [
+      {
+        "label": "Klikego — 10KM du Maine Libre 2026",
+        "url": "https://www.klikego.com/inscription/10km-du-maine-libre-2026/course-a-pied-running/1473113914100-12"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Corrida d'Arnage 5 km",
+    "event": "Corrida d'Arnage",
+    "type": "5km",
+    "city": "Arnage",
+    "lat": 47.9269544,
+    "lon": 0.1889245,
+    "date": "2027-01-03",
+    "dateNote": "Dimanche 3 janvier 2027",
+    "start": "13 h 30",
+    "startLocation": "Avenue de la Paix, Arnage",
+    "finishLocation": "Avenue de la Paix, Arnage",
+    "distance": 5,
+    "course": "Arnage",
+    "surface": "Route et chemins",
+    "gpxUrl": "data/gpx/5KM_ARNAGE_CORRIDA_DARNAGE_2026.gpx",
+    "gpxYear": 2026,
+    "sources": [
+      {
+        "label": "Corrida d'Arnage — Miles Republic",
+        "url": "https://fr.milesrepublic.com/event/corrida-darnage-4086"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "10 km de Changé",
+    "event": "10 km de Changé",
+    "type": "10km",
+    "city": "Changé",
+    "lat": 47.9818,
+    "lon": 0.289,
+    "date": "2027-03-21",
+    "dateNote": "Dimanche 21 mars 2027 (date à confirmer par l'organisateur)",
+    "start": "10 h 45",
+    "unsure": true,
+    "startLocation": "Rue Louise Michel (gymnase de l'Auneau), Changé",
+    "finishLocation": "Rue Louise Michel (gymnase de l'Auneau), Changé",
+    "distance": 10,
+    "course": "Changé",
+    "surface": "Route",
+    "gpxUrl": "data/gpx/10KM_CHANGE_2026.gpx",
+    "gpxYear": 2026,
+    "sources": [
+      {
+        "label": "10 km de Changé — Miles Republic",
+        "url": "https://fr.milesrepublic.com/event/10-km-de-change-4510"
+      },
+      {
+        "label": "10 Km de Changé — Marathons.com",
+        "url": "https://www.marathons.com/en/events/10-km-de-change_kunKF"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Tour de Montreuil-Juigné 10 km",
+    "event": "Tour de Montreuil-Juigné",
+    "type": "10km",
+    "city": "Montreuil-Juigné",
+    "lat": 47.5291981,
+    "lon": -0.6099197,
+    "date": "2027-05-01",
+    "dateNote": "Samedi 1er mai 2027",
+    "start": "10 h 10",
+    "unsure": true,
+    "startLocation": "Rue David d'Angers (stade Pierre Conotte), Montreuil-Juigné",
+    "finishLocation": "Stade Pierre Conotte, Montreuil-Juigné",
+    "distance": 10,
+    "course": "Montreuil-Juigné",
+    "surface": "Route",
+    "gpxUrl": "data/gpx/10KM_MONTREUIL_JUIGNE_TOUR_DE_MONTREUIL_JUIGNE_2026.gpx",
+    "gpxYear": 2026,
+    "sources": [
+      {
+        "label": "Tour de Montreuil-Juigné 2026 — Klikego",
+        "url": "https://www.klikego.com/inscription/41eme-tour-de-montreuil-juigne-2026/course-a-pied-running/1643055044748-8"
+      },
+      {
+        "label": "Tour de Montreuil-Juigné — Miles Republic",
+        "url": "https://fr.milesrepublic.com/event/tour-de-montreuil-juigne-4988"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Corrida d'Arnage 10 km",
+    "event": "Corrida d'Arnage",
+    "type": "10km",
+    "city": "Arnage",
+    "lat": 47.9269544,
+    "lon": 0.1889245,
+    "date": "2027-01-03",
+    "dateNote": "Dimanche 3 janvier 2027",
+    "start": "15 h",
+    "unsure": true,
+    "startLocation": "Avenue de la Paix, Arnage",
+    "finishLocation": "Avenue de la Paix, Arnage",
+    "distance": 10,
+    "course": "Arnage",
+    "surface": "Route",
+    "terrain": "Parcours plat dans les rues d'Arnage",
+    "gpxUrl": "data/gpx/10KM_ARNAGE_CORRIDA_DARNAGE_2026.gpx",
+    "gpxYear": 2026,
+    "sources": [
+      {
+        "label": "Corrida d'Arnage — Miles Republic",
+        "url": "https://fr.milesrepublic.com/event/corrida-darnage-4086"
+      },
+      {
+        "label": "Corrida d'Arnage — Finishers",
+        "url": "https://finishers.com/course/corrida-darnage"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "La Changéenne 5 km",
+    "event": "5 et 10 km de Changé",
+    "type": "5km",
+    "city": "Changé",
+    "lat": 47.9806,
+    "lon": 0.2879,
+    "date": "2027-03-21",
+    "dateNote": "Dimanche 21 mars 2027 (date à confirmer par l'organisateur)",
+    "start": "10 h",
+    "unsure": true,
+    "startLocation": "Rue Louise Michel (gymnase de l'Auneau), Changé",
+    "finishLocation": "Rue Louise Michel (gymnase de l'Auneau), Changé",
+    "distance": 5,
+    "course": "Changé",
+    "surface": "Route",
+    "gpxUrl": "data/gpx/5KM_CHANGE_2026.gpx",
+    "gpxYear": 2026,
+    "sources": [
+      {
+        "label": "10 km de Changé (La Changéenne 5 km) — Miles Republic",
+        "url": "https://fr.milesrepublic.com/event/10-km-de-change-4510"
+      },
+      {
+        "label": "10 Km de Changé — Marathons.com",
+        "url": "https://www.marathons.com/en/events/10-km-de-change_kunKF"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "La Sargéenne 5 km",
+    "event": "5 et 10 km de Sargé-lès-Le Mans",
+    "type": "5km",
+    "city": "Sargé-lès-le-Mans",
+    "lat": 48.0353,
+    "lon": 0.2408,
+    "date": "2027-04-18",
+    "dateNote": "Date à confirmer (mars ou avril 2027)",
+    "start": "10 h",
+    "unsure": true,
+    "startLocation": "Sargé-lès-le-Mans",
+    "finishLocation": "Sargé-lès-le-Mans",
+    "distance": 5,
+    "course": "Sargé-lès-le-Mans",
+    "surface": "Route",
+    "terrain": "Mélange de passages urbains et de zones naturelles autour de Sargé",
+    "gpxUrl": "data/gpx/5KM_SARGE_LES_LE_MANS_2026.gpx",
+    "gpxYear": 2026,
+    "sources": [
+      {
+        "label": "10 km de Sargé — Miles Republic",
+        "url": "https://fr.milesrepublic.com/event/10-km-de-sarge-6432"
+      },
+      {
+        "label": "10 km de Sargé — TrainerDay",
+        "url": "https://trainerday.com/events/fr/10-km-de-sarge-2027"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "10 km de Sargé-lès-Le Mans",
+    "event": "5 et 10 km de Sargé-lès-Le Mans",
+    "type": "10km",
+    "city": "Sargé-lès-le-Mans",
+    "lat": 48.0353,
+    "lon": 0.24,
+    "date": "2027-04-18",
+    "dateNote": "Date à confirmer (mars ou avril 2027)",
+    "start": "10 h 45",
+    "unsure": true,
+    "startLocation": "Sargé-lès-le-Mans",
+    "finishLocation": "Sargé-lès-le-Mans",
+    "distance": 10,
+    "course": "Sargé-lès-le-Mans",
+    "surface": "Route",
+    "terrain": "Mélange de passages urbains et de zones naturelles autour de Sargé",
+    "gpxUrl": "data/gpx/10KM_SARGE_LES_LE_MANS_2026.gpx",
+    "gpxYear": 2026,
+    "sources": [
+      {
+        "label": "10 km de Sargé — Miles Republic",
+        "url": "https://fr.milesrepublic.com/event/10-km-de-sarge-6432"
+      },
+      {
+        "label": "10 km de Sargé — TrainerDay",
+        "url": "https://trainerday.com/events/fr/10-km-de-sarge-2027"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Foulées de Mulsanne 10 km",
+    "event": "Foulées de Mulsanne",
+    "type": "10km",
+    "city": "Mulsanne",
+    "lat": 47.909,
+    "lon": 0.2523,
+    "date": "2027-09-12",
+    "dateNote": "Dimanche 12 septembre 2027 (estimation : 2e dimanche de septembre, à confirmer)",
+    "start": "10 h 30",
+    "unsure": true,
+    "startLocation": "Avenue de Nettléham (près du collège), Mulsanne",
+    "finishLocation": "Avenue de Nettléham (près du collège), Mulsanne",
+    "distance": 10,
+    "course": "Mulsanne",
+    "surface": "Route",
+    "terrain": "Parcours roulant et rapide",
+    "gpxUrl": "data/gpx/10KM_MULSANNE_FOULEES_DE_MULSANNE_2026.gpx",
+    "gpxYear": 2026,
+    "sources": [
+      {
+        "label": "Foulées de Mulsanne — Finishers",
+        "url": "https://www.finishers.com/course/les-foulees-de-mulsanne"
+      },
+      {
+        "label": "Foulées de Mulsanne — Miles Republic",
+        "url": "https://fr.milesrepublic.com/event/foulees-de-mulsanne-2873"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Foulées de Mulsanne semi-marathon",
+    "event": "Foulées de Mulsanne",
+    "type": "21km",
+    "city": "Mulsanne",
+    "lat": 47.9101,
+    "lon": 0.2515,
+    "date": "2027-09-12",
+    "dateNote": "Dimanche 12 septembre 2027 (estimation : 2e dimanche de septembre, à confirmer)",
+    "start": "8 h 30",
+    "unsure": true,
+    "startLocation": "Avenue de Nettléham (près du collège), Mulsanne",
+    "finishLocation": "Avenue de Nettléham (près du collège), Mulsanne",
+    "distance": 21.1,
+    "course": "Mulsanne (2 boucles de 10 km)",
+    "surface": "Route",
+    "terrain": "Parcours roulant et rapide, qualificatif pour les Championnats de France",
+    "gpxUrl": "data/gpx/21KM_MULSANNE_FOULEES_DE_MULSANNE_2026.gpx",
+    "gpxYear": 2026,
+    "sources": [
+      {
+        "label": "Foulées de Mulsanne — Finishers",
+        "url": "https://www.finishers.com/course/les-foulees-de-mulsanne"
+      },
+      {
+        "label": "Foulées de Mulsanne — Miles Republic",
+        "url": "https://fr.milesrepublic.com/event/foulees-de-mulsanne-2873"
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Tout Rennes Court — S'MI Ouest-France (semi-marathon)",
+    "event": "Tout Rennes Court",
+    "type": "21km",
+    "city": "Rennes",
+    "lat": 48.1074,
+    "lon": -1.6804,
+    "date": "2027-10-03",
+    "dateNote": "Octobre 2027 (date à confirmer, estimation : 1er dimanche d'octobre)",
+    "start": "9 h",
+    "unsure": true,
+    "startLocation": "Zone de la Criée / Esplanade Charles-de-Gaulle, Rennes",
+    "finishLocation": "Rennes",
+    "distance": 21.1,
+    "course": "Rennes (parcours unique de 21,1 km)",
+    "surface": "Route",
+    "terrain": "Parcours en centre-ville ; depuis 2026, une seule boucle au lieu de deux (tracé GPX de mai 2026, à vérifier)",
+    "gpxUrl": "data/gpx/21KM_RENNES_TRC_2026.gpx",
+    "gpxYear": 2026,
+    "sources": [
+      {
+        "label": "Tout Rennes Court — Miles Republic",
+        "url": "https://fr.milesrepublic.com/event/tout-rennes-court-3235"
+      },
+      {
+        "label": "Tout Rennes Court 2026 — Unidivers",
+        "url": "https://unidivers.fr/tout-rennes-court-4/"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Marathon Vert Rennes 42 km",
+    "event": "Marathon Vert Rennes",
+    "type": "42km",
+    "city": "Rennes",
+    "lat": 48.1097,
+    "lon": -1.6879,
+    "date": "2027-10-17",
+    "dateNote": "Octobre 2027 (date à confirmer, estimation d'après l'édition 2026)",
+    "start": "9 h",
+    "unsure": true,
+    "startLocation": "Mail François-Mitterrand, Rennes",
+    "finishLocation": "Esplanade Charles-de-Gaulle, Rennes",
+    "distance": 42.195,
+    "course": "Rennes (2 boucles urbaines)",
+    "surface": "Route",
+    "terrain": "Parcours 100 % urbain",
+    "gpxUrl": "data/gpx/42KM_RENNES_TRC_2026.gpx",
+    "gpxYear": 2026,
+    "sources": [
+      {
+        "label": "Marathon Vert Rennes — Finishers",
+        "url": "https://www.finishers.com/course/marathon-vert-rennes"
+      },
+      {
+        "label": "Marathon Vert Rennes 2026 — The Running Collective",
+        "url": "https://blog.therunningcollective.fr/?p=26379"
+      }
+    ]
+  }
+]
