@@ -311,6 +311,75 @@ body.race-route-active #toast:not(.show){transform:translate(-50%,140px)}
   .race-map-stat-grid strong{font-size:12px!important}
   .race-map-stat-grid span{font-size:8px!important}
 }
+
+/* RUN3D mobile : panneau parcours complet, sans débordement horizontal */
+@media(max-width:620px){
+  .race-map-stats{
+    position:fixed!important;
+    top:max(7px,env(safe-area-inset-top,0px))!important;
+    left:50%!important;
+    right:auto!important;
+    transform:translateX(-50%)!important;
+    width:calc(100vw - 12px)!important;
+    max-width:600px!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:9px 8px 10px!important;
+    box-sizing:border-box!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+  }
+  .race-map-stats-head{
+    width:100%!important;
+    min-width:0!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:7px!important;
+    align-items:center!important;
+  }
+  .race-map-stats-head>div:first-child{min-width:0!important;width:100%!important}
+  .race-map-stats-title,.race-map-stats-sub{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .race-map-stats-title{font-size:14px!important}
+  .race-map-stats-sub{font-size:10px!important}
+  .rm-acts{
+    width:100%!important;
+    min-width:0!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) 30px 30px!important;
+    gap:5px!important;
+    align-items:center!important;
+  }
+  .rm-acts .est-btn{
+    min-width:0!important;
+    width:100%!important;
+    padding:7px 5px!important;
+    font-size:10px!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .race-map-stats-close,.rm-tog{width:30px!important;height:30px!important;min-width:30px!important}
+  .race-map-stat-grid{
+    width:100%!important;
+    min-width:0!important;
+    display:grid!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    gap:5px!important;
+    margin-top:7px!important;
+    overflow:visible!important;
+  }
+  .race-map-stat-grid>div{min-width:0!important;padding:6px 3px!important}
+  .race-map-stat-grid>div:nth-child(-n+3){grid-column:span 2}
+  .race-map-stat-grid>div:nth-child(n+4){grid-column:span 3}
+  .race-map-stat-grid strong{font-size:12px!important;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis}
+  .race-map-stat-grid span{font-size:8px!important;white-space:normal!important;line-height:1.1!important}
+}
+@media(max-width:350px){
+  .race-map-stats{width:calc(100vw - 8px)!important;padding:8px 6px 9px!important}
+  .rm-acts{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 28px 28px!important}
+  .race-map-stats-close,.rm-tog{width:28px!important;height:28px!important;min-width:28px!important}
+  .race-map-stat-grid strong{font-size:11px!important}
+}
 </style>
 </head>
 <body>
