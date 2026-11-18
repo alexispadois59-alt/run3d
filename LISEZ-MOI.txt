@@ -1,0 +1,2 @@
+Nom du fichier GPX : 
+- DISTANCE_VILLE_NOM_COURSE_ANNEE.gpx
