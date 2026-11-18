@@ -278,6 +278,39 @@ body.race-route-active #searchBar{
 body.race-route-active #toast{top:auto;bottom:calc(16px + env(safe-area-inset-bottom,0px))}
 body.race-route-active #toast:not(.show){transform:translate(-50%,140px)}
 .rp-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.rp-tools .cta{flex:1 1 auto;justify-content:center;padding:11px 14px;font-size:13px}.cta.alt{background:var(--soft);color:var(--ink)}
+
+/* RUN3D mobile: barre noire du parcours réellement centrée */
+@media(max-width:620px){
+  .race-map-stats{
+    position:fixed!important;
+    top:max(8px,env(safe-area-inset-top,0px))!important;
+    left:8px!important;
+    right:8px!important;
+    transform:none!important;
+    width:auto!important;
+    max-width:600px!important;
+    margin:0 auto!important;
+    padding:10px 10px 11px!important;
+    box-sizing:border-box!important;
+    max-height:calc(100dvh - 16px - env(safe-area-inset-top,0px))!important;
+    overflow:auto!important;
+  }
+  .race-map-stats-head{width:100%;align-items:center!important;gap:8px!important}
+  .race-map-stats-head>div:first-child{min-width:0;flex:1}
+  .race-map-stats-title,.race-map-stats-sub{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rm-acts{display:flex;align-items:center;justify-content:flex-end;gap:5px;flex:none}
+  .rm-acts .est-btn{padding:7px 9px;font-size:11px}
+  .race-map-stat-grid{width:100%;grid-template-columns:repeat(5,minmax(0,1fr))!important}
+}
+@media(max-width:390px){
+  .race-map-stats{left:6px!important;right:6px!important;padding:9px 8px 10px!important}
+  .race-map-stats-title{font-size:14px!important}
+  .race-map-stats-sub{font-size:10px!important}
+  .rm-acts .est-btn{padding:6px 7px;font-size:10px}
+  .race-map-stats-close,.rm-tog{width:28px!important;height:28px!important}
+  .race-map-stat-grid strong{font-size:12px!important}
+  .race-map-stat-grid span{font-size:8px!important}
+}
 </style>
 </head>
 <body>
