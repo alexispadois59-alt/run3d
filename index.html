@@ -83,7 +83,7 @@ body.routing #routePanel{transform:translate(-50%,0);opacity:1;pointer-events:au
 .card{padding:18px;border-radius:20px;background:var(--solid);border:1px solid var(--line);margin-bottom:12px}.card h3{margin:0 0 12px;font-size:16px}.kv{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-top:1px solid var(--line);font-size:14px}.kv:first-of-type{border-top:0}.kv span{color:var(--muted)}.kv b{text-align:right}.na{color:var(--muted);font-weight:600}
 .d-actions{display:flex;gap:10px;flex-wrap:wrap}.cta{display:flex;align-items:center;gap:8px;padding:13px 18px;border-radius:14px;background:var(--accent);color:#fff;font-weight:700;font-size:14px}.cta.secondary{background:var(--soft);color:var(--ink)}
 .src a{display:block;padding:8px 0;color:var(--accent);font-weight:600;font-size:14px;text-decoration:none;overflow-wrap:anywhere}.d-note{font-size:13px;color:var(--muted);line-height:1.45}
-#modal{position:absolute;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(10,18,26,.4);padding:20px}#modal.show{display:flex}.dialog{width:min(380px,100%);background:var(--solid);border-radius:24px;padding:22px;box-shadow:var(--shadow)max-height:85vh;display:flex;flex-direction:column;overflow:hidden;}.dialog h3{margin:0 0 6px}.dialog p{margin:0 0 16px;color:var(--muted);font-size:14px}.dialog input{width:100%;padding:13px;border-radius:13px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;margin-bottom:16px}.dialog .row{display:flex;gap:8px;justify-content:flex-end}.btn{padding:12px 18px;border-radius:13px;background:var(--soft);font-weight:700}.btn.solid{background:var(--ink);color:var(--solid)}.btn.danger{background:var(--danger);color:#fff}
+#modal{position:absolute;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(10,18,26,.4);padding:20px}#modal.show{display:flex}.dialog{width:min(380px,100%);background:var(--solid);border-radius:24px;padding:22px;box-shadow:var(--shadow);max-height:85vh;display:flex;flex-direction:column;overflow:hidden;}.dialog h3{margin:0 0 6px}.dialog p{margin:0 0 16px;color:var(--muted);font-size:14px}.dialog input{width:100%;padding:13px;border-radius:13px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;margin-bottom:16px}.dialog .row{display:flex;gap:8px;justify-content:flex-end}.btn{padding:12px 18px;border-radius:13px;background:var(--soft);font-weight:700}.btn.solid{background:var(--ink);color:var(--solid)}.btn.danger{background:var(--danger);color:#fff}
 #toast{position:absolute;top:16px;left:50%;transform:translate(-50%,-90px);z-index:80;padding:12px 18px;border-radius:14px;background:var(--ink);color:var(--solid);font-size:14px;font-weight:600;max-width:calc(100% - 32px);transition:.3s;box-shadow:var(--shadow)}#toast.show{transform:translate(-50%,0)}
 .empty{text-align:center;color:var(--muted);padding:40px 24px}.empty strong{display:block;color:var(--ink);margin-bottom:4px}
 
@@ -271,6 +271,30 @@ body.race-route-active #searchBar{
 .dialog .es-time{margin:0 0 8px;padding:12px;font-size:24px;font-weight:800;text-align:center;letter-spacing:.02em}
 .dialog .es-small{margin:8px 0 0;padding:11px;font-size:14px;display:none}
 .es-hint{margin-top:7px;font-size:12px;line-height:1.4;color:var(--muted)}
+/* Fenêtre « Estimer mon allure » */
+.dialog:has(.pace-wrap){width:min(420px,100%)}
+.pace-wrap{display:flex;flex-direction:column;gap:16px;flex:1;min-height:0;overflow-y:auto}
+.pace-head h3{margin:0;font-size:20px}
+.pace-race{margin-top:3px;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pace-chips{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:8px}
+.pace-chips>div{padding:10px 8px;border-radius:14px;background:var(--soft);text-align:center;min-width:0}
+.pace-chips b{display:block;font-size:14px;font-weight:800;white-space:nowrap}
+.pace-chips span{display:block;margin-top:2px;font-size:10px;font-weight:700;color:var(--muted)}
+.pace-chips .live{background:rgba(122,77,255,.16)}.pace-chips .live b{color:var(--accent)}
+.pace-field label{display:block;margin-bottom:8px;font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.02em}
+.dialog .pace-field input{margin:0;padding:14px 12px;font-size:30px;font-weight:800;text-align:center;letter-spacing:.03em;font-variant-numeric:tabular-nums;border-radius:16px}
+.dialog .pace-field input::placeholder{color:var(--muted);opacity:.4}
+.dialog .pace-field input:focus{outline:2px solid var(--accent);outline-offset:0}
+.pace-field .es-hint{text-align:center;margin-top:8px}
+.pace-presets .es-lab{margin-bottom:8px}
+.pace-pills{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.pace-pills button{padding:9px 4px;border-radius:12px;background:var(--soft);font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
+.pace-pills button small{margin-left:2px;font-size:10px;font-weight:700;color:var(--muted)}
+.pace-pills button:hover{background:rgba(122,77,255,.16)}
+.pace-note{margin:0!important;font-size:12px!important;line-height:1.4;color:var(--muted);text-align:center}
+.pace-actions{display:flex;gap:8px}
+.pace-actions .btn{padding:14px 16px}
+.pace-actions #dlgNo{flex:0 0 32%}.pace-actions #dlgYes{flex:1}
 .est-tbl{column-width:200px;column-gap:20px;margin-top:6px}
 .est-row{display:grid;grid-template-columns:46px 1fr 1fr;gap:6px;align-items:center;padding:4px 0 4px 8px;border-left:3px solid transparent;border-bottom:1px solid rgba(255,255,255,.08);break-inside:avoid;font-size:12px}
 .est-row span:first-child{opacity:.6}.est-row span{text-align:right}.est-row span:first-child{text-align:left}
@@ -1322,17 +1346,32 @@ function courseEquivalent(sec,dist,exponent){return sec*Math.pow(dist,exponent)}
 function paceTargetForm(D,up){
   const saved=localStorage.getItem('run3d_target_time')||'';
   return new Promise(resolve=>{
-    $('dialog').innerHTML=`<h3>Estimer mon allure</h3>
-      <p class="es-sub">${escapeHtml($('raceMapStatsTitle').textContent)} · ${D.toFixed(2).replace('.',',')} km · D+ ${Math.round(up)} m</p>
-      <div class="es-form">
-        <div class="es-block"><div class="es-lab">Temps objectif sur la course complète</div>
-          <input id="targetTime" class="es-time" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" autocorrect="off" spellcheck="false" value="${escapeHtml(saved)}" placeholder="Ex. 4000 ou 1:25:00">
-          <div class="es-hint">Saisie rapide : 4000 = 40:00 · 12500 = 1:25:00. RUN3D répartit ensuite l'effort selon le profil GPX.</div>
-        </div>
+    const paces=[240,270,300,330,360,390];
+    $('dialog').innerHTML=`<div class="pace-wrap">
+      <div class="pace-head"><h3>Estimer mon allure</h3><div class="pace-race">${escapeHtml($('raceMapStatsTitle').textContent)}</div></div>
+      <div class="pace-chips">
+        <div><b>${D.toFixed(2).replace('.',',')} km</b><span>Distance</span></div>
+        <div><b>D+ ${Math.round(up)} m</b><span>Dénivelé</span></div>
+        <div class="live"><b id="paceLive">—</b><span>Allure moyenne</span></div>
       </div>
-      <div class="row"><button class="btn" id="dlgNo">Annuler</button><button class="btn solid" id="dlgYes">Calculer les allures</button></div>`;
+      <div class="pace-field">
+        <label for="targetTime">Temps objectif sur la course complète</label>
+        <input id="targetTime" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" autocorrect="off" spellcheck="false" value="${escapeHtml(saved)}" placeholder="40:00">
+        <div class="es-hint">Saisie rapide : 4000 = 40:00 · 12500 = 1:25:00</div>
+      </div>
+      <div class="pace-presets">
+        <div class="es-lab">Ou pars d'une allure cible</div>
+        <div class="pace-pills">${paces.map(s=>`<button type="button" data-s="${s}">${fmtTime(s)}<small>/km</small></button>`).join('')}</div>
+      </div>
+      <p class="pace-note">RUN3D répartit ensuite l'effort kilomètre par kilomètre selon le profil GPX.</p>
+      <div class="pace-actions"><button class="btn" id="dlgNo">Annuler</button><button class="btn solid" id="dlgYes">Calculer les allures</button></div>
+    </div>`;
     $('modal').classList.add('show');
     const input=$('targetTime');input.focus();input.addEventListener('blur',()=>normalizeTimeInput(input));
+    const live=()=>{const s=parseTime(input.value);$('paceLive').textContent=s?fmtTime(s/D)+' /km':'—'};
+    input.addEventListener('input',live);live();
+    $('dialog').querySelector('.pace-pills').onclick=e=>{const b=e.target.closest('button[data-s]');if(!b)return;input.value=fmtTime(D*(+b.dataset.s));live();input.focus()};
+    input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('dlgYes').click()}});
     const close=v=>{$('modal').classList.remove('show');resolve(v)};
     $('dlgNo').onclick=()=>close(null);
     $('dlgYes').onclick=()=>{const raw=input.value.trim(),seconds=parseTime(raw);if(!seconds){toast('Entre un temps objectif valide.');input.focus();return}normalizeTimeInput(input);try{localStorage.setItem('run3d_target_time',input.value)}catch{}close(seconds)};
