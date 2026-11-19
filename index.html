@@ -246,7 +246,10 @@ body.race-route-active #searchBar{
 .race-map-stat-grid strong{font-size:13px!important}
 .race-map-stat-grid span{font-size:9px;margin-top:0}
 #raceProfile{margin-top:8px}
+#raceProfile{position:relative}
 #raceProfile svg{height:40px!important}
+.km-mini{position:absolute;top:27px;transform:translateX(-50%);height:12px;line-height:12px;padding:0 5px;border-radius:999px;background:#fff;color:#0f1c26;font-size:9px;font-weight:800;pointer-events:none;box-shadow:0 1px 3px rgba(15,28,38,.3)}
+.km-tag{padding:2px 7px;border-radius:999px;background:#fff;color:#0f1c26;font-size:11px;font-weight:800;line-height:1.3;white-space:nowrap;box-shadow:0 1px 4px rgba(15,28,38,.3);pointer-events:none}
 #profReadout{font-size:10px;margin-top:2px}
 #raceEstimate{margin-top:0}
 #estOut:not(:empty){margin-top:8px;flex-basis:100%}
@@ -733,12 +736,13 @@ function removeRouteLayers(prefix,source){
   if(map.getSource(source))map.removeSource(source);
 }
 function updateRouteLine(){
-  if(routeCoordinates.length<2){removeRouteLayers('route','route');return;}
+  if(routeCoordinates.length<2){removeRouteLayers('route','route');clearKmMarkers();return;}
   const data={type:'Feature',properties:{},geometry:{type:'LineString',coordinates:routeCoordinates}};
   if(map.getSource('route'))map.getSource('route').setData(data);
   else{map.addSource('route',{type:'geojson',data,lineMetrics:true});addRouteLayers('route','route');}
+  setKmMarkers(routeCoordinates);
 }
-function clearRouteLine(){removeRouteLayers('route','route');}
+function clearRouteLine(){removeRouteLayers('route','route');clearKmMarkers();}
 async function undoLastPoint(){
   if(!routePoints.length||segmentCalculationInProgress)return;
   elevationRequestId++;const m=routeMarkers.pop();m?.remove();routePoints.pop();if(routeSegments.length)routeSegments.pop();
@@ -794,7 +798,7 @@ function clearDisplayedSavedRoute(){removeRouteLayers('saved-route','saved-route
 /* =========================
    PARCOURS DE COURSE OFFICIELLE
 ========================= */
-function clearDisplayedRaceRoute(){raceEndMarkers.forEach(m=>m.remove());raceEndMarkers=[];curProfile=null;if(profMarker){profMarker.remove();profMarker=null}if($('raceProfile'))$('raceProfile').innerHTML='';
+function clearDisplayedRaceRoute(){clearKmMarkers();raceEndMarkers.forEach(m=>m.remove());raceEndMarkers=[];curProfile=null;if(profMarker){profMarker.remove();profMarker=null}if($('raceProfile'))$('raceProfile').innerHTML='';
   removeRouteLayers('race-route','race-route');
   window.displayedRaceRoute=null;
 }
@@ -942,12 +946,12 @@ async function showRaceRoute(r){if(r?.custom)return showCustomRaceRoute(r);
     };
 
     map.addSource('race-route',{type:'geojson',data,lineMetrics:true});
-    addRouteLayers('race-route','race-route');addRaceEndpoints(coords);
+    addRouteLayers('race-route','race-route');addRaceEndpoints(coords);setKmMarkers(coords);
     window.displayedRaceRoute=r;
 
     const b=new maplibregl.LngLatBounds();
     coords.forEach(c=>b.extend(c));
-    map.fitBounds(b,{padding:{top:150,bottom:80,left:50,right:50},maxZoom:15,duration:1200});
+    fitRaceBounds(b,1200);
 
     const set=(id,value)=>{const el=$(id);if(el)el.textContent=value};
     set('raceMapDistance',distanceKm.toFixed(2)+' km');applyOfficialProfile(r,coords,points.map(p=>p.ele));
@@ -1002,6 +1006,46 @@ async function searchPlaces(q){
     renderResults(items,null,'Aucun résultat');
   }catch(e){if(e.name!=='AbortError')renderResults([],null,'Recherche indisponible')}
 }
+/* Cadrage du parcours : laisse la place du panneau (profil déplié compris) pour voir tout le tracé. */
+let lastFitTop=0;
+function raceFitTop(){
+  const panel=$('raceMapStats');if(!panel||panel.hidden)return 110;
+  const extra=(!panel.classList.contains('mini')&&!$('raceProfile').innerHTML)?72:0;
+  return panel.offsetHeight+extra+34;
+}
+function fitRaceBounds(b,duration){
+  lastFitTop=raceFitTop();
+  map.fitBounds(b,{padding:{top:lastFitTop,bottom:90,left:50,right:90},maxZoom:15,duration});
+}
+function refitRaceRoute(force){
+  const src=map.getSource('race-route');if(!src||!window.displayedRaceRoute)return;
+  if(!force&&Math.abs(raceFitTop()-lastFitTop)<20)return;
+  const b=new maplibregl.LngLatBounds();src.serialize().data.geometry.coordinates.forEach(c=>b.extend(c));
+  fitRaceBounds(b,600);
+}
+/* =========================
+   REPERES KILOMETRIQUES
+========================= */
+let kmMarkers=[];
+function clearKmMarkers(){kmMarkers.forEach(k=>k.m.remove());kmMarkers=[]}
+/* Un repère par km tant qu'il y a assez de place à l'écran, sinon un sur 2, 5, 10... */
+function kmStep(){const mpp=78271.52*Math.cos(map.getCenter().lat*Math.PI/180)/Math.pow(2,map.getZoom()),px=1000/mpp;for(const s of [1,2,5,10,20])if(px*s>=36)return s;return 50}
+function updateKmVisibility(){const st=kmStep();kmMarkers.forEach(k=>{k.el.style.display=k.km%st===0?'':'none'})}
+function setKmMarkers(coords){
+  clearKmMarkers();
+  if(!coords||coords.length<2)return;
+  const cum=[0];for(let i=1;i<coords.length;i++)cum.push(cum[i-1]+distanceBetweenCoordinates(coords[i-1],coords[i]));
+  const total=cum[cum.length-1];let j=1;
+  for(let km=1;km*1000<=total;km++){
+    const d=km*1000;if(total-d<120)break;
+    while(j<coords.length-1&&cum[j]<d)j++;
+    const a=coords[j-1],b=coords[j],seg=cum[j]-cum[j-1],t=seg>0?(d-cum[j-1])/seg:0;
+    const el=document.createElement('div');el.className='km-tag';el.textContent=km===1?'1 km':String(km);
+    kmMarkers.push({km,el,m:new maplibregl.Marker({element:el}).setLngLat([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t]).addTo(map)});
+  }
+  updateKmVisibility();
+}
+map.on('zoom',updateKmVisibility);
 qEl.addEventListener('input',()=>{const q=qEl.value.trim();clearEl.hidden=!qEl.value;clearTimeout(searchTimer);if(q.length<2){searchCtl?.abort();renderResults(getRecent(),'Récents');return}searchTimer=setTimeout(()=>searchPlaces(q),300)});
 qEl.addEventListener('focus',()=>{if(qEl.value.trim().length<2)renderResults(getRecent(),'Récents')});
 qEl.addEventListener('blur',closeResults);
@@ -1204,9 +1248,9 @@ function showCustomRaceRoute(r){
   const set=(id,v)=>{$(id).textContent=v},alt=v=>v==null?'—':v+' m';
   set('raceMapDistance',r.distance.toFixed(2)+' km');set('raceMapDplus',r.ascent+' m');set('raceMapDminus',r.descent+' m');set('raceMapMin',alt(r.minAlt));set('raceMapMax',alt(r.maxAlt));
   map.addSource('race-route',{type:'geojson',data:{type:'Feature',properties:{raceId:r.id},geometry:{type:'LineString',coordinates:r.coordinates}},lineMetrics:true});
-  addRouteLayers('race-route','race-route');window.displayedRaceRoute=r;addRaceEndpoints(r.coordinates);loadCustomProfile(r);
+  addRouteLayers('race-route','race-route');window.displayedRaceRoute=r;addRaceEndpoints(r.coordinates);setKmMarkers(r.coordinates);loadCustomProfile(r);
   const b=new maplibregl.LngLatBounds();r.coordinates.forEach(c=>b.extend(c));
-  map.fitBounds(b,{padding:{top:150,bottom:80,left:50,right:50},maxZoom:15,duration:1200});
+  fitRaceBounds(b,1200);
 }
 async function deleteCustomRace(id){
   if(!await dialog({title:'Supprimer cette course ?',text:'Elle sera retirée définitivement.',ok:'Supprimer',danger:true}))return;
@@ -1455,7 +1499,7 @@ async function loadCustomProfile(r){try{const sp=sampleRouteCoordinates(r.coordi
   if(window.displayedRaceRoute===r&&r.minAlt==null){const v=el.filter(Number.isFinite);if(v.length){$('raceMapMin').textContent=Math.round(Math.min(...v))+' m';$('raceMapMax').textContent=Math.round(Math.max(...v))+' m'}}
 }catch(e){console.warn(e)}}
 function drawProfile(p){
-  const W=700,H=70,mn=Math.min(...p.e),rg=Math.max(Math.max(...p.e)-mn,10),X=i=>(p.d[i]/p.total*W).toFixed(1),Y=i=>(H-6-(p.e[i]-mn)/rg*(H-14)).toFixed(1);
+  const W=700,H=70,mn=Math.min(...p.e),rg=Math.max(Math.max(...p.e)-mn,10),X=i=>(p.d[i]/p.total*W).toFixed(1),Y=i=>(H-22-(p.e[i]-mn)/rg*(H-28)).toFixed(1);
   let segs='';for(let i=1;i<p.d.length;i++)segs+=`<line x1="${X(i-1)}" y1="${Y(i-1)}" x2="${X(i)}" y2="${Y(i)}" stroke="${slopeColor(p.sl[i])}" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`;
   const el=$('raceProfile');
   el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:70px;display:block;touch-action:none;cursor:crosshair">${segs}</svg><div class="est-sub" id="profReadout">Profil · bleu : descente, vert : plat, jaune à rouge : montée</div>`;
@@ -1464,6 +1508,11 @@ function drawProfile(p){
     out.textContent=`${(p.d[i]/1000).toFixed(2)} km · ${Math.round(p.e[i])} m · pente ${p.sl[i].toFixed(1)} %`;
     if(!profMarker){const dot=document.createElement('div');dot.className='prof-dot';profMarker=new maplibregl.Marker({element:dot}).setLngLat(p.c[i]).addTo(map)}else profMarker.setLngLat(p.c[i])};
   svg.onpointerleave=()=>{if(profMarker){profMarker.remove();profMarker=null}};
+  const wpx=el.clientWidth||560,kmTot=p.total/1000;let step=20;
+  for(const s2 of [1,2,5,10,20]){if(wpx/kmTot*s2>=30){step=s2;break}}
+  let tags='';for(let k=step;k/kmTot<=0.97;k+=step)tags+=`<span class="km-mini" style="left:${(k/kmTot*100).toFixed(2)}%">${k}</span>`;
+  svg.insertAdjacentHTML('afterend',tags);
+  setTimeout(()=>refitRaceRoute(false),60);
 }
 async function applyOfficialProfile(r,coords,ele){
   const ok=ele.filter(Number.isFinite);
@@ -1507,7 +1556,7 @@ function exportGpx(){
   const head=document.querySelector('#raceMapStats .race-map-stats-head'),close=$('raceMapStatsClose'),est=$('estBtn'),pace=$('paceBtn'),gpx=$('gpxBtn');
   const tog=document.createElement('button');tog.className='rm-tog';tog.setAttribute('aria-label','Réduire le panneau');
   tog.innerHTML='<svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M6 15l6-6 6 6"/></svg>';
-  tog.onclick=()=>$('raceMapStats').classList.toggle('mini');
+  tog.onclick=()=>{$('raceMapStats').classList.toggle('mini');setTimeout(()=>refitRaceRoute(false),60)};
   est.textContent='Estimer mon chrono';pace.textContent='Estimer mon allure';
   [est,pace].forEach(b=>b.addEventListener('click',()=>$('raceMapStats').classList.remove('mini')));
   const row=document.createElement('div');row.className='rm-acts';row.append(est,pace,gpx,tog,close);head.appendChild(row);
