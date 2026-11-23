@@ -461,6 +461,17 @@ body.race-route-active #toast:not(.show){transform:translate(-50%,140px)}
 .auth-link{background:none;border:0;padding:6px;font:inherit;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;text-decoration:underline}
 .auth-link.danger{color:var(--danger)}
 .auth-form .row button:disabled,.auth-link:disabled{opacity:.5;cursor:default}
+
+.gen-choices{display:flex;flex-direction:column;gap:10px;margin:12px 0}
+.gen-choice{display:flex;flex-direction:column;gap:4px;text-align:left;padding:14px 16px;border-radius:16px;border:1.5px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;cursor:pointer;transition:border-color .15s,transform .15s}
+.gen-choice:hover{border-color:var(--accent);transform:translateY(-1px)}
+.gen-choice strong{font-size:15px;font-weight:800}.gen-choice span{font-size:13px;color:var(--muted);font-weight:600}
+.gen-form{display:flex;flex-direction:column;gap:6px;margin-top:8px;overflow-y:auto;max-height:70vh;padding-right:2px}
+.gen-form label{margin-top:6px;font-size:12px;font-weight:800;color:var(--muted)}.gen-form label em{font-weight:600}
+.gen-form input,.gen-form select{width:100%;padding:12px 13px;border-radius:13px;border:1.5px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;font-size:15px}
+.gen-form input:focus,.gen-form select:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px rgba(122,77,255,.2)}
+.gen-form small{font-size:12px;font-weight:700;color:var(--muted)}
+.gen-form [hidden]{display:none}
 </style>
 </head>
 <body>
@@ -517,7 +528,7 @@ body.race-route-active #toast:not(.show){transform:translate(-50%,140px)}
   <button class="fab glass" onclick="openRaces()" title="Courses officielles"><svg class="i" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg></button>
   <button class="fab glass" onclick="openHistory()" title="Mes parcours"><svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></button>
   <button id="accountBtn" class="fab glass" onclick="openAccount()" title="Se connecter" aria-label="Se connecter"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></button>
-  <button id="routeToggle" class="fab primary" onclick="toggleRoute()" title="Créer un parcours"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button id="routeToggle" class="fab primary" onclick="openCreateChooser()" title="Créer un parcours" aria-label="Créer un parcours"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
 </div>
 
 <div id="overlay" onclick="closeHistory()"></div>
@@ -597,7 +608,7 @@ function setupTerrain(){
   map.addSource('terrain-dem',{type:'raster-dem',tiles:['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'],tileSize:256,encoding:'terrarium',maxzoom:15});
   const firstSymbol=map.getStyle().layers.find(l=>l.type==='symbol');
   map.addLayer({id:'terrain-hillshade',type:'hillshade',source:'terrain-dem',
-    paint:{'hillshade-method':'standard','hillshade-illumination-direction':315,'hillshade-exaggeration':.55},
+    paint:{'hillshade-illumination-direction':315,'hillshade-exaggeration':.55},
     layout:{visibility:'none'}},firstSymbol?firstSymbol.id:undefined);
   map.addSource('satellite',{type:'raster',tiles:[SAT_TILES],tileSize:256,maxzoom:19,attribution:SAT_ATTRIBUTION});
   map.addLayer({id:'satellite',type:'raster',source:'satellite',layout:{visibility:'none'},paint:SAT_LOOK},map.getStyle().layers.find(l=>l.type!=='background')?.id);
@@ -1647,6 +1658,235 @@ function centerOnUser(){
 }
 updateTerrainButton();updateSatButton();
 loadRacesJson();
+</script>
+<script>
+/* =========================
+   GENERATION DE PARCOURS
+   Bouton + : tracer à la main ou générer une boucle / un aller-retour
+   à partir d'une distance (ou durée), d'un D+ visé et d'un type de surface.
+========================= */
+const GEN_MAX=9,GEN_TOL=.08,GEN_KEY='run3d_gen';
+
+function genDest(p,km,bearing){
+  const R=6371,d=km/R,t=bearing*Math.PI/180,f1=p[1]*Math.PI/180,l1=p[0]*Math.PI/180;
+  const f2=Math.asin(Math.sin(f1)*Math.cos(d)+Math.cos(f1)*Math.sin(d)*Math.cos(t));
+  const l2=l1+Math.atan2(Math.sin(t)*Math.sin(d)*Math.cos(f1),Math.cos(d)-Math.sin(f1)*Math.sin(f2));
+  return[((l2*180/Math.PI+540)%360)-180,f2*180/Math.PI];
+}
+/* même règle que l'affichage du D+ de l'app (variations d'au moins 3 m) */
+function genAscent(el){let up=0;for(let i=1;i<el.length;i++){const d=el[i]-el[i-1];if(d>=3)up+=d}return Math.round(up)}
+/* part du tracé qui repasse sur des endroits déjà parcourus (à plus de ~450 m d'intervalle) */
+function genOverlap(samples){
+  const seen=new Map();let rep=0;
+  samples.forEach((p,i)=>{
+    const k=Math.round(p[0]/.001)+','+Math.round(p[1]/.001),j=seen.get(k);
+    if(j===undefined)seen.set(k,i);else if(i-j>5)rep++;
+  });
+  return samples.length?rep/samples.length:0;
+}
+function genInitialHills(o){
+  if(o.ascent==null)return .5;
+  const pk=o.ascent/o.distance;
+  return pk<8?0:pk<20?.25:pk<35?.5:pk<55?.8:1;
+}
+function genCosting(o,hills){
+  const h=Math.max(0,Math.min(1,hills));
+  if(o.surface==='chemins')return{use_hills:h,use_tracks:1,walkway_factor:.8,sidewalk_factor:1.5};
+  if(o.surface==='routes')return{use_hills:h,use_tracks:0,sidewalk_factor:.9};
+  return{use_hills:h,use_tracks:.5};
+}
+
+/* o : {start:[lon,lat], kind:'loop'|'out', distance:km, ascent:m|null, surface}
+   deps : {route(points,costing)->[{coordinates,distance}], elev(coords)->[m], sample(coords)->coords, rand()} */
+async function genSearch(o,deps,progress,aborted){
+  const L=o.distance,S=o.start,loop=o.kind==='loop';
+  let k=loop?1.35:1.3,theta=deps.rand()*360,refined=false,hills=genInitialHills(o),fails=0,lastErr=null,attempts=0;
+  const good=[],near=[];
+  const jitter=()=>(deps.rand()-.5)*30;
+  while(attempts<GEN_MAX&&!aborted()){
+    attempts++;progress(attempts,GEN_MAX);
+    let pts,side;
+    if(loop){side=L/(3*k);pts=[S,genDest(S,side,theta),genDest(S,side,theta+60),S]}
+    else{side=L/(2*k);pts=[S,genDest(S,side,theta)]}
+    let legs;
+    try{legs=await deps.route(pts,genCosting(o,hills));fails=0}
+    catch(e){lastErr=e;fails++;if(fails>=4&&!good.length&&!near.length)throw e;theta+=90+jitter();refined=false;continue}
+    let segments;
+    if(loop)segments=legs.map((l,i)=>({start:[...pts[i]],end:[...pts[i+1]],mode:'routes',coordinates:l.coordinates,distance:l.distance}));
+    else{
+      const a=legs[0];
+      segments=[{start:[...pts[0]],end:[...pts[1]],mode:'routes',coordinates:a.coordinates,distance:a.distance},
+        {start:[...pts[1]],end:[...pts[0]],mode:'routes',coordinates:[...a.coordinates].reverse(),distance:a.distance}];
+      pts=[pts[0],pts[1],pts[0]];
+    }
+    const Lr=segments.reduce((s,x)=>s+x.distance,0),err=Math.abs(Lr-L)/L;
+    const coords=[segments[0].coordinates[0]];segments.forEach(s=>coords.push(...s.coordinates.slice(1)));
+    const cand={points:pts.map(p=>[...p]),segments,distance:Lr,err,coords,ascent:null,overlap:loop?genOverlap(deps.sample(coords)):0,hills};
+    const measured=Lr/(loop?3*side:2*side);k=Math.max(1.05,Math.min(2.4,measured));
+    if(err<=GEN_TOL){
+      try{cand.ascent=genAscent(await deps.elev(deps.sample(coords)))}catch{cand.ascent=null}
+      good.push(cand);refined=false;theta+=137.5+jitter();
+      if(o.ascent!=null&&cand.ascent!=null){
+        const r=cand.ascent/Math.max(o.ascent,1);
+        if(r<.8)hills=Math.min(1,hills+.3);else if(r>1.25)hills=Math.max(0,hills-.3);
+        if(Math.abs(cand.ascent-o.ascent)<=.12*Math.max(o.ascent,50))break;
+      }
+      if(good.length>=(o.ascent!=null?3:2))break;
+    }else{
+      near.push(cand);
+      if(!refined)refined=true;else{refined=false;theta+=137.5+jitter()}
+    }
+  }
+  let pool=good;
+  if(!pool.length){
+    if(!near.length)throw lastErr||new Error('Aucun parcours trouvé');
+    const b=near.sort((x,y)=>x.err-y.err)[0];
+    if(b.err>.25)throw new Error('Aucun parcours proche de ta demande');
+    try{b.ascent=genAscent(await deps.elev(deps.sample(b.coords)))}catch{b.ascent=null}
+    pool=[b];
+  }
+  const score=c=>c.err*100+(o.ascent!=null&&c.ascent!=null?Math.abs(c.ascent-o.ascent)/Math.max(o.ascent,60)*70:0)+c.overlap*60;
+  pool.sort((a,b)=>score(a)-score(b));
+  return pool[0];
+}
+
+/* ---------- appels réels ---------- */
+async function genRoute(points,costing){
+  const body=JSON.stringify({locations:points.map((p,i)=>({lat:p[1],lon:p[0],type:'break'})),costing:'pedestrian',costing_options:{pedestrian:costing},units:'kilometers',shape_format:'geojson'});
+  let res;
+  for(let a=0;a<2;a++){
+    res=await fetch('https://valhalla1.openstreetmap.de/route',{method:'POST',headers:{'Content-Type':'application/json'},body});
+    if(res.ok||![429,502,503,504].includes(res.status))break;
+    await sleep(1500);
+  }
+  if(!res.ok)throw new Error(res.status===400?'Aucun chemin trouvé ici':'Service d’itinéraires indisponible ('+res.status+')');
+  const data=await res.json();
+  if(!data.trip||!data.trip.legs||!data.trip.legs.length)throw new Error('Aucun itinéraire trouvé');
+  return data.trip.legs.map(l=>({coordinates:getSegmentCoordinates(l.shape),distance:Number(l.summary.length)}));
+}
+const GEN_DEPS={route:genRoute,elev:getElevations,sample:sampleRouteCoordinates,rand:Math.random};
+
+/* ---------- interface ---------- */
+let genAbort=false;
+function genLoad(){try{return JSON.parse(localStorage.getItem(GEN_KEY)||'{}')}catch{return{}}}
+function genSave(v){try{localStorage.setItem(GEN_KEY,JSON.stringify(v))}catch{}}
+function genModal(html){$('dialog').innerHTML=html;$('modal').classList.add('show')}
+function genClose(){$('modal').classList.remove('show')}
+function parsePaceMin(v){
+  v=String(v).trim().replace(',','.');
+  if(v.includes(':')){const [m,s]=v.split(':').map(Number);return(m>=0&&s>=0&&s<60)?m+s/60:NaN}
+  return Number(v);
+}
+
+function openCreateChooser(){
+  if(segmentCalculationInProgress)return;
+  if(routeActive){cancelRoute();return}
+  genModal(`<h3>Créer un parcours</h3><p>Comment veux-tu le construire ?</p>
+  <div class="gen-choices">
+    <button type="button" class="gen-choice" id="chManual"><strong>Tracer à la main</strong><span>Touche la carte pour placer chaque point.</span></button>
+    <button type="button" class="gen-choice" id="chAuto"><strong>Générer un parcours</strong><span>Donne une distance, un D+ et une surface : l’app propose une boucle.</span></button>
+  </div>
+  <div class="row"><button type="button" class="btn" id="chCancel">Annuler</button></div>`);
+  $('chManual').onclick=()=>{genClose();startRoute()};
+  $('chAuto').onclick=openGenerator;
+  $('chCancel').onclick=genClose;
+}
+
+function openGenerator(msg){
+  const s={kind:'loop',goal:'dist',dist:'10',dur:'60',pace:'6:00',ascent:'',surface:'chemins',from:'map',...genLoad()};
+  genModal(`<h3>Générer un parcours</h3>
+  <form id="genForm" class="gen-form" novalidate>
+    <label for="genKind">Type</label>
+    <select id="genKind"><option value="loop">Boucle (retour au départ)</option><option value="out">Aller-retour</option></select>
+    <label for="genGoal">Objectif</label>
+    <select id="genGoal"><option value="dist">Une distance</option><option value="time">Une durée</option></select>
+    <div id="genDistBox"><label for="genDist">Distance (km)</label><input id="genDist" type="number" inputmode="decimal" min="1" max="60" step="0.5"></div>
+    <div id="genTimeBox" hidden><label for="genDur">Durée (minutes)</label><input id="genDur" type="number" inputmode="numeric" min="10" max="360" step="5">
+      <label for="genPace">Allure moyenne (min/km)</label><input id="genPace" type="text" inputmode="decimal" placeholder="6:00"><small id="genHint"></small></div>
+    <label for="genAscent">D+ visé en mètres <em>(facultatif)</em></label>
+    <input id="genAscent" type="number" inputmode="numeric" min="0" max="3000" step="10" placeholder="Peu importe">
+    <label for="genSurf">Surface</label>
+    <select id="genSurf"><option value="chemins">Chemins et sentiers privilégiés</option><option value="indiff">Indifférent</option><option value="routes">Routes et rues privilégiées</option></select>
+    <label for="genFrom">Départ</label>
+    <select id="genFrom"><option value="map">Centre de la carte</option><option value="me">Ma position</option></select>
+    <div class="auth-msg" id="genMsg" role="alert" aria-live="polite"></div>
+    <div class="row"><button type="button" class="btn" id="genBack">Retour</button><button type="submit" class="btn solid">Générer</button></div>
+  </form>`);
+  $('genKind').value=s.kind;$('genGoal').value=s.goal;$('genDist').value=s.dist;$('genDur').value=s.dur;$('genPace').value=s.pace;
+  $('genAscent').value=s.ascent;$('genSurf').value=s.surface;$('genFrom').value=s.from;
+  if(typeof msg==='string')$('genMsg').textContent=msg;
+  const sync=()=>{
+    const t=$('genGoal').value==='time';$('genDistBox').hidden=t;$('genTimeBox').hidden=!t;
+    if(t){const p=parsePaceMin($('genPace').value),d=Number($('genDur').value);$('genHint').textContent=(p>0&&d>0)?'≈ '+(d/p).toFixed(1)+' km':''}
+  };
+  ['genGoal','genDur','genPace'].forEach(i=>$(i).addEventListener('input',sync));$('genGoal').addEventListener('change',sync);sync();
+  $('genBack').onclick=openCreateChooser;
+  $('genForm').onsubmit=ev=>{
+    ev.preventDefault();const bad=t=>{$('genMsg').textContent=t};
+    const kind=$('genKind').value,goal=$('genGoal').value,surface=$('genSurf').value,from=$('genFrom').value;
+    let km;
+    if(goal==='dist')km=Number($('genDist').value);
+    else{const p=parsePaceMin($('genPace').value),d=Number($('genDur').value);
+      if(!(p>=3&&p<=15))return bad('Allure : entre une valeur entre 3:00 et 15:00 min/km.');
+      if(!(d>=10&&d<=360))return bad('Durée : entre 10 et 360 minutes.');
+      km=d/p}
+    if(!(km>=1&&km<=60))return bad('La distance doit être comprise entre 1 et 60 km.');
+    const aRaw=$('genAscent').value.trim(),ascent=aRaw===''?null:Number(aRaw);
+    if(ascent!==null&&!(ascent>=0&&ascent<=3000))return bad('D+ : entre 0 et 3000 m, ou laisse vide.');
+    genSave({kind,goal,dist:$('genDist').value,dur:$('genDur').value,pace:$('genPace').value,ascent:aRaw,surface,from});
+    runGeneration({kind,distance:+km.toFixed(2),ascent,surface},from);
+  };
+}
+
+async function genStartPoint(from){
+  if(from==='me'&&navigator.geolocation){
+    try{
+      const p=await new Promise((ok,ko)=>navigator.geolocation.getCurrentPosition(ok,ko,{enableHighAccuracy:true,timeout:8000,maximumAge:60000}));
+      return[p.coords.longitude,p.coords.latitude];
+    }catch{toast('Position indisponible : départ au centre de la carte.')}
+  }
+  const c=map.getCenter();return[c.lng,c.lat];
+}
+
+async function runGeneration(o,from){
+  genAbort=false;
+  genModal(`<h3>Génération en cours…</h3><p id="genProg" aria-live="polite">Recherche du point de départ…</p><div class="row"><button type="button" class="btn" id="genCancel">Annuler</button></div>`);
+  $('genCancel').onclick=()=>{genAbort=true;$('genCancel').disabled=true;$('genProg').textContent='Annulation…'};
+  try{
+    o.start=await genStartPoint(from);
+    const best=await genSearch(o,GEN_DEPS,(i,n)=>{const p=$('genProg');if(p)p.textContent='Essai '+i+' sur '+n+'…'},()=>genAbort);
+    if(genAbort){genClose();toast('Génération annulée');return}
+    await genApply(best);genResult(o,best,from);
+  }catch(e){
+    console.error(e);
+    if(genAbort){genClose();toast('Génération annulée');return}
+    openGenerator((e&&e.message)||'Génération impossible. Réessaie avec d’autres paramètres.');
+  }
+}
+
+async function genApply(best){
+  startRoute();                       /* vide le tracé en cours et passe en mode édition */
+  routePoints=best.points.map(p=>[...p]);
+  routeMarkers=routePoints.map((p,i)=>createRouteMarker(p,i===0));
+  routeSegments=best.segments;
+  rebuildRouteGeometry();updateRouteLine();refreshLiveEnd();
+  const b=new maplibregl.LngLatBounds();best.coords.forEach(c=>b.extend(c));
+  map.fitBounds(b,{padding:{top:90,bottom:220,left:40,right:40},duration:700,maxZoom:16});
+  updateElevation();                  /* met à jour le D+ affiché et le profil de pente */
+}
+
+function genResult(o,best,from){
+  const km=best.distance.toFixed(2).replace('.',','),gap=Math.round(best.err*100);
+  const asc=best.ascent==null?'D+ indisponible':'D+ '+best.ascent+' m';
+  let note=`Objectif : ${o.distance.toString().replace('.',',')} km`+(o.ascent!=null?` · D+ ${o.ascent} m`:'');
+  if(gap>=5)note+=` — écart de distance : ${gap} %.`;
+  if(o.ascent!=null&&best.ascent!=null&&Math.abs(best.ascent-o.ascent)>.25*Math.max(o.ascent,50))note+=' Le relief ne permet pas de coller exactement au D+ visé.';
+  genModal(`<h3>Parcours proposé</h3><p><strong>${escapeHtml(km)} km · ${escapeHtml(asc)}</strong></p><p>${escapeHtml(note)}</p>
+  <p>Tu peux encore l’ajuster à la main (ajouter des points, annuler) puis le sauvegarder.</p>
+  <div class="row"><button type="button" class="btn" id="genAgain">Autre proposition</button><button type="button" class="btn solid" id="genOk">Garder</button></div>`);
+  $('genOk').onclick=genClose;
+  $('genAgain').onclick=()=>{o.start=undefined;runGeneration({kind:o.kind,distance:o.distance,ascent:o.ascent,surface:o.surface},from)};
+}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
