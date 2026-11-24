@@ -1,4 +1,4 @@
-const CACHE_NAME = "run3d-v10";
+const CACHE_NAME = "run3d-v11";
 
 const CORE_FILES = [
   "./",
