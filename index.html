@@ -53,13 +53,8 @@ body.routing #routePanel{transform:translate(-50%,0);opacity:1;pointer-events:au
 .pbtn{width:38px;height:38px;border-radius:12px;display:grid;place-items:center}
 .pbtn:hover{background:var(--soft)}.pbtn.danger{color:var(--danger)}.pbtn:disabled{opacity:.35}
 .pbtn.finish{width:40px;height:40px;margin-left:4px;border-radius:13px;background:var(--accent);color:#fff}
-#overlay{position:absolute;inset:0;z-index:40;background:rgba(10,18,26,.35);opacity:0;pointer-events:none;transition:.25s}
-#overlay.show{opacity:1;pointer-events:auto}
-#historyPanel{position:absolute;top:0;right:0;bottom:0;width:380px;max-width:92%;z-index:50;background:var(--solid);box-shadow:var(--shadow);display:flex;flex-direction:column;transform:translateX(105%);transition:.3s;padding-top:env(safe-area-inset-top,0px)}
-#historyPanel.show{transform:none}
-.sheet-head{display:flex;align-items:center;justify-content:space-between;padding:22px 20px 14px}.sheet-head h2{margin:0;font-size:22px}
 .icon-btn{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--soft)}
-#historyList{flex:1;overflow:auto;padding:4px 16px 20px;display:flex;flex-direction:column;gap:10px}
+.my-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
 .h-item{padding:14px 14px 14px 16px;border-radius:16px;background:var(--soft);cursor:pointer;display:flex;gap:12px;align-items:center}
 .h-body{flex:1;min-width:0}.h-name{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.h-date{font-size:12px;color:var(--muted);margin-top:2px}
 .h-stats{display:flex;gap:14px;margin-top:10px;font-size:13px;font-weight:700}.h-stats em{font-style:normal;color:var(--muted);font-weight:600;margin-right:3px}
@@ -68,6 +63,7 @@ body.routing #routePanel{transform:translate(-50%,0);opacity:1;pointer-events:au
 #racesPage.show{transform:none;visibility:visible;transition:transform .35s,visibility 0s}
 .rp-head{display:flex;align-items:center;gap:12px;padding:16px 20px 12px;max-width:960px;width:100%;margin:auto}
 .rp-title{font-size:22px;font-weight:800}.rp-body{flex:1;overflow:auto;padding-bottom:32px}.rp-wrap{max-width:960px;margin:auto;padding:4px 20px}
+.rp-tabs{display:flex;gap:8px;max-width:960px;width:100%;margin:0 auto;padding:0 20px 8px;box-sizing:border-box}.rp-tab{flex:1;padding:11px 0;border-radius:14px;background:var(--soft);color:var(--ink);font-weight:700;font-size:14px}.rp-tab.active{background:var(--accent);color:#fff}
 .rp-search{display:flex;align-items:center;gap:10px;height:46px;padding:0 14px;border-radius:15px;background:var(--solid);border:1px solid var(--line);color:var(--muted)}
 .rp-search input{flex:1;border:0;background:none;font:inherit;font-size:15px;font-weight:600;color:var(--ink)}
 .chips{display:flex;gap:8px;overflow:auto;padding:14px 0}.chip{padding:9px 16px;border-radius:999px;background:var(--solid);border:1px solid var(--line);font-size:14px;font-weight:700;white-space:nowrap}.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
@@ -451,22 +447,16 @@ body.race-route-active #toast:not(.show){transform:translate(-50%,140px)}
   <button id="terrainToggle" class="fab glass" onclick="toggleTerrain()" title="2D / 3D"></button>
   <button id="satToggle" class="fab glass" onclick="toggleSatellite()" title="Vue satellite"></button>
   <button class="fab glass" onclick="getLocation()" title="Ma position"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/></svg></button>
-  <button class="fab glass" onclick="openRaces()" title="Courses officielles"><svg class="i" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg></button>
-  <button class="fab glass" onclick="openHistory()" title="Mes parcours"><svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></button>
+  <button class="fab glass" onclick="openRaces('cal')" title="Courses"><svg class="i" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg></button>
   <button id="routeToggle" class="fab primary" onclick="toggleRoute()" title="Créer un parcours"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
 </div>
-
-<div id="overlay" onclick="closeHistory()"></div>
-<aside id="historyPanel">
-  <div class="sheet-head"><h2>Mes parcours</h2><button class="icon-btn" onclick="closeHistory()"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div id="historyList"></div>
-</aside>
 
 <section id="racesPage">
   <div class="rp-head">
     <button class="icon-btn" onclick="racesBack()"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
-    <div class="rp-title" id="rpTitle">Calendrier des courses</div>
+    <div class="rp-title" id="rpTitle">Courses</div>
   </div>
+  <div class="rp-tabs" id="rpTabs"><button class="rp-tab active" data-t="cal">Calendrier</button><button class="rp-tab" data-t="mine">Mes courses</button></div>
   <div class="rp-body" id="rpBody"></div>
 </section>
 
@@ -609,7 +599,7 @@ function resetElevation(){
 }
 function toggleRoute(){if(segmentCalculationInProgress)return;routeActive?cancelRoute():startRoute();}
 function startRoute(){
-  clearRoute();clearDisplayedSavedRoute();closeHistory();$('raceMapStats').hidden=true;clearDisplayedRaceRoute();document.body.classList.remove('race-route-active');
+  clearRoute();clearDisplayedSavedRoute();$('raceMapStats').hidden=true;clearDisplayedRaceRoute();document.body.classList.remove('race-route-active');
   routeActive=true;customRaceMode=false;nextSegmentMode='routes';
   $('modeRoutes').classList.add('active');$('modeFree').classList.remove('active');
   document.body.classList.add('routing');map.getCanvas().style.cursor='crosshair';
@@ -770,19 +760,28 @@ async function saveCurrentRoute(){if(customRaceMode)return saveCustomRace();
   try{localStorage.setItem('run3d_routes',JSON.stringify(h));}catch{toast('Stockage indisponible.');return}
   cancelRoute();clearRoute();toast('Parcours sauvegardé');
 }
-function openHistory(){renderHistory();$('overlay').classList.add('show');$('historyPanel').classList.add('show')}
-function closeHistory(){$('overlay').classList.remove('show');$('historyPanel').classList.remove('show')}
-function renderHistory(){
-  const list=$('historyList'),h=getSavedRoutes();list.innerHTML='';
-  if(!h.length){list.innerHTML=`<div class="empty"><div style="font-size:34px">${ICON_RUN}</div><strong>Aucun parcours sauvegardé</strong>Créez votre premier parcours avec le bouton +.</div>`;return}
-  h.forEach(r=>{
+function renderMyRaces(){
+  const saved=getSavedRoutes().map(r=>({t:'s',r})),custom=getCustomRaces().map(r=>({t:'c',r}));
+  const items=saved.concat(custom).sort((x,y)=>(+y.r.id||0)-(+x.r.id||0));
+  $('rpBody').innerHTML=`<div class="rp-wrap">
+    <div class="rp-tools"><button class="cta" id="rpNew">+ Créer ma course</button><button class="cta alt" id="rpGpx">Importer un GPX</button><button class="cta alt" id="rpSave">Sauvegarder</button><button class="cta alt" id="rpRest">Restaurer</button></div>
+    <input type="file" id="gpxFile" accept=".gpx,.xml,application/gpx+xml" hidden><input type="file" id="jsonFile" accept=".json,application/json" hidden>
+    <div class="my-list" id="myList"></div></div>`;
+  $('rpNew').onclick=startCustomRace;
+  $('rpGpx').onclick=()=>$('gpxFile').click();$('gpxFile').onchange=e=>{importGpxRace(e.target.files[0]);e.target.value=''};
+  $('rpSave').onclick=exportCustomRaces;$('rpRest').onclick=()=>$('jsonFile').click();$('jsonFile').onchange=e=>{importCustomRaces(e.target.files[0]);e.target.value=''};
+  const list=$('myList');
+  if(!items.length){list.innerHTML=`<div class="empty" style="grid-column:1/-1"><div style="font-size:34px">${ICON_RUN}</div><strong>Aucune course créée</strong>Créez votre premier parcours avec le bouton +.</div>`;return}
+  list.onclick=e=>{const x=e.target.closest('.race-del');if(x){e.stopPropagation();deleteCustomRace(+x.dataset.id);return}const c=e.target.closest('.race');if(c)showRaceRoute(getCustomRaces().find(r=>r.id===+c.dataset.id))};
+  items.forEach(({t,r})=>{
+    if(t==='c'){list.insertAdjacentHTML('beforeend',raceCard(r));return}
     const el=document.createElement('div');el.className='h-item';
     el.innerHTML=`<div class="h-body"><div class="h-name">${escapeHtml(r.name)}</div><div class="h-date">${escapeHtml(r.date||'')} à ${escapeHtml(r.time||'')}</div><div class="h-stats"><span>${Number(r.distance||0).toFixed(2)} km</span><span><em>D+</em>${r.ascent??'—'} m</span><span><em>D−</em>${r.descent??'—'} m</span></div></div><button class="h-del">${ICON_TRASH}</button>`;
     el.onclick=()=>showSavedRoute(r);el.querySelector('.h-del').onclick=e=>{e.stopPropagation();deleteSavedRoute(r.id)};list.appendChild(el);
   });
 }
 function showSavedRoute(r){
-  closeHistory();cancelRoute();clearDisplayedSavedRoute();
+  cancelRoute();clearDisplayedSavedRoute();
   if(!r.coordinates?.length){toast('Tracé invalide.');return}
   const race={id:r.id,custom:true,name:r.name,city:'—',event:'Parcours perso',date:null,start:'À confirmer',distance:+r.distance||0,ascent:r.ascent||0,descent:r.descent||0,minAlt:null,maxAlt:null,coordinates:r.coordinates,points:r.points,noEstimate:true};
   showCustomRaceRoute(race);
@@ -975,7 +974,7 @@ $('raceMapStatsClose')?.addEventListener('click',()=>{
 
 async function deleteSavedRoute(id){
   if(!await dialog({title:'Supprimer ce parcours ?',text:'Il sera retiré définitivement.',ok:'Supprimer',danger:true}))return;
-  localStorage.setItem('run3d_routes',JSON.stringify(getSavedRoutes().filter(r=>r.id!==id)));renderHistory();
+  localStorage.setItem('run3d_routes',JSON.stringify(getSavedRoutes().filter(r=>r.id!==id)));showRaceList();
 }
 
 /* =========================
@@ -1067,36 +1066,41 @@ async function loadRacesJson(){
   console.info(RACES.length+' parcours chargés depuis '+RACES_ORIGIN,RACES);
   if($('racesPage').classList.contains('show')&&raceView==='list')updateRaceGrid();
 }
-let raceFilter='all',raceQuery='',raceView='list';
+let raceFilter='all',raceQuery='',raceView='list',racesTab='cal';
 const rfmt=(iso,o)=>new Date(iso+'T12:00:00').toLocaleDateString('fr-FR',o),NA='<span class="na">À confirmer</span>';
 
-function openRaces(){$('racesPage').classList.add('show');closeHistory();showRaceList()}
+function openRaces(tab){if(tab)racesTab=tab;$('racesPage').classList.add('show');showRaceList()}
 function closeRaces(){$('racesPage').classList.remove('show')}
-function racesBack(){raceView==='detail'?showRaceList():closeRaces()}
+function racesBack(){closeRaces()}
+function setRaceTab(t){racesTab=t;showRaceList()}
+$('rpTabs').onclick=e=>{const b=e.target.closest('.rp-tab');if(b)setRaceTab(b.dataset.t)};
 function showRaceList(){
-  raceView='list';$('rpTitle').textContent='Calendrier des courses';
+  raceView='list';$('rpTitle').textContent='Courses';
+  $('rpTabs').querySelectorAll('.rp-tab').forEach(b=>b.classList.toggle('active',b.dataset.t===racesTab));
+  racesTab==='mine'?renderMyRaces():renderCalendar();
+}
+function renderCalendar(){
   $('rpBody').innerHTML=`<div class="rp-wrap">
     <div class="rp-search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="rpSearch" placeholder="Rechercher une course" value="${escapeHtml(raceQuery)}"></div>
     <div class="chips" id="rpChips">${Object.keys(TYPE_LABEL).map(k=>`<button class="chip${k===raceFilter?' active':''}" data-f="${k}">${TYPE_LABEL[k]}</button>`).join('')}</div>
-    <div class="rp-tools"><button class="cta" id="rpNew">+ Créer ma course</button><button class="cta alt" id="rpFolder">Choisir le dossier GPX</button><button class="cta alt" id="rpGpx">Importer un GPX</button><button class="cta alt" id="rpSave">Sauvegarder</button><button class="cta alt" id="rpRest">Restaurer</button></div>
-    <input type="file" id="gpxFile" accept=".gpx,.xml,application/gpx+xml" hidden><input type="file" id="jsonFile" accept=".json,application/json" hidden>
+    <div class="rp-tools"><button class="cta alt" id="rpFolder">Choisir le dossier GPX</button></div>
     <p class="note" id="raceLoadInfo">${RACES.length} parcours chargés · ${escapeHtml(RACES_ORIGIN)}</p>
     <div class="rp-grid" id="rpGrid"></div></div>`;
-  $('rpNew').onclick=startCustomRace;$('rpFolder').onclick=chooseLocalGpxFolder;
-  $('rpGpx').onclick=()=>$('gpxFile').click();$('gpxFile').onchange=e=>{importGpxRace(e.target.files[0]);e.target.value=''};
-  $('rpSave').onclick=exportCustomRaces;$('rpRest').onclick=()=>$('jsonFile').click();$('jsonFile').onchange=e=>{importCustomRaces(e.target.files[0]);e.target.value=''};$('rpSearch').oninput=e=>{raceQuery=e.target.value;updateRaceGrid()};
+  $('rpFolder').onclick=chooseLocalGpxFolder;$('rpSearch').oninput=e=>{raceQuery=e.target.value;updateRaceGrid()};
   $('rpChips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;raceFilter=b.dataset.f;$('rpChips').querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x===b));updateRaceGrid()};
-  $('rpGrid').onclick=e=>{const x=e.target.closest('.race-del');if(x){e.stopPropagation();deleteCustomRace(+x.dataset.id);return}const c=e.target.closest('.race');if(c)showRaceRoute(allRaces().find(r=>r.id===+c.dataset.id))};
+  $('rpGrid').onclick=e=>{const c=e.target.closest('.race');if(c)showRaceRoute(RACES.find(r=>r.id===+c.dataset.id))};
   updateRaceGrid();
 }
 function isPast(r){if(!r.date)return false;const t=new Date(),n=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');return r.date<n}
-function updateRaceGrid(){
-  const q=raceQuery.trim().toLowerCase();
-  const list=allRaces().filter(r=>(raceFilter==='all'||r.type===raceFilter)&&(!q||(r.name+' '+r.city+' '+r.event).toLowerCase().includes(q))).sort((a,b)=>{const pa=isPast(a),pb=isPast(b);if(pa!==pb)return pa?1:-1;const c=(a.date||'9999').localeCompare(b.date||'9999');return pa?-c:c});
-  $('rpGrid').innerHTML=list.length?list.map(r=>`<div class="race${isPast(r)?' past':''}" tabindex="0" data-id="${r.id}">
+function raceCard(r){return `<div class="race${isPast(r)?' past':''}" tabindex="0" data-id="${r.id}">
     <div class="race-date">${r.date?`<span class="rd-m">${escapeHtml(rfmt(r.date,{month:'short'}).replace('.',''))}</span><b>${new Date(r.date+'T12:00:00').getDate()}</b><span class="yr">${r.date.slice(0,4)}</span>`:`<span class="rd-m">${r.custom?'Date':'2027'}</span><b>?</b><span class="yr">à venir</span>`}</div>
     <div class="race-main"><div class="race-name">${escapeHtml(r.name)}</div><div class="race-city">${escapeHtml(r.city)} · ${escapeHtml(r.event)}</div><div class="race-tags"><span class="tag dist">${r.custom?r.distance.toFixed(2)+' km':KM_LABEL[r.type]}</span>${isPast(r)?'<span class="tag">Terminée</span>':''}${r.unsure?'<span class="tag warn">À confirmer</span>':''}${r.custom?`<button class="race-del" data-id="${r.id}" aria-label="Supprimer">${ICON_TRASH}</button>`:''}</div></div>
-  </div>`).join(''):`<div class="empty">Aucune course trouvée.</div>`;
+  </div>`}
+function updateRaceGrid(){
+  if(!$('rpGrid'))return;
+  const q=raceQuery.trim().toLowerCase();
+  const list=RACES.filter(r=>!r.custom&&(raceFilter==='all'||r.type===raceFilter)&&(!q||(r.name+' '+r.city+' '+r.event).toLowerCase().includes(q))).sort((a,b)=>{const pa=isPast(a),pb=isPast(b);if(pa!==pb)return pa?1:-1;const c=(a.date||'9999').localeCompare(b.date||'9999');return pa?-c:c});
+  $('rpGrid').innerHTML=list.length?list.map(raceCard).join(''):`<div class="empty">Aucune course trouvée.</div>`;
 }
 /* =========================
    COURSES PERSO
@@ -1161,7 +1165,7 @@ async function importGpxRace(file){
     const list=getCustomRaces();
     list.unshift({id:Date.now(),custom:true,type:'perso',name:f.name,event:'Course perso',city:f.city||'—',lat:coords[0][1],lon:coords[0][0],date:f.date||null,start:f.start||'À confirmer',startLocation:f.from||'—',finishLocation:f.to||'—',surface:f.surface,note:f.note,distance:+km.toFixed(2),ascent:Math.round(up),descent:Math.round(down),minAlt:el.length?Math.round(Math.min(...el)):null,maxAlt:el.length?Math.round(Math.max(...el)):null,coordinates:coords,points:[coords[0],coords.at(-1)]});
     try{localStorage.setItem(CUSTOM_KEY,JSON.stringify(list))}catch{toast('Stockage saturé ou indisponible.');return}
-    raceFilter='all';raceQuery='';showRaceList();toast('Course importée : '+km.toFixed(2)+' km');
+    racesTab='mine';raceFilter='all';raceQuery='';showRaceList();toast('Course importée : '+km.toFixed(2)+' km');
   }catch(e){console.error(e);toast('Import GPX impossible : '+e.message)}
 }
 function exportCustomRaces(){
@@ -1179,7 +1183,7 @@ async function importCustomRaces(file){
     const cur=getCustomRaces(),ids=new Set(cur.map(r=>r.id));let n=0;
     ok.forEach(r=>{if(!ids.has(r.id)){cur.push({...r,custom:true,type:'perso'});ids.add(r.id);n++}});
     localStorage.setItem(CUSTOM_KEY,JSON.stringify(cur));
-    showRaceList();toast(n+' course(s) ajoutée(s), '+(ok.length-n)+' déjà présente(s)');
+    racesTab='mine';showRaceList();toast(n+' course(s) ajoutée(s), '+(ok.length-n)+' déjà présente(s)');
   }catch(e){console.error(e);toast('Restauration impossible : '+e.message)}
 }
 async function saveCustomRace(){
@@ -1191,7 +1195,7 @@ async function saveCustomRace(){
   const list=getCustomRaces();
   list.unshift({id:Date.now(),custom:true,type:'perso',name:f.name,event:'Course perso',city:f.city||'—',lat:routePoints[0][1],lon:routePoints[0][0],date:f.date||null,start:f.start||'À confirmer',startLocation:f.from||'—',finishLocation:f.to||'—',surface:f.surface,note:f.note,distance:+totalDistance.toFixed(2),ascent:totalAscent,descent:totalDescent,minAlt:min,maxAlt:max,coordinates:routeCoordinates,points:routePoints});
   try{localStorage.setItem(CUSTOM_KEY,JSON.stringify(list))}catch{toast('Stockage indisponible.');return}
-  cancelRoute();raceFilter='all';raceQuery='';openRaces();toast('Course créée');
+  cancelRoute();raceFilter='all';raceQuery='';openRaces('mine');toast('Course créée');
 }
 function showCustomRaceRoute(r){
   $('estBtn').style.display=r.noEstimate?'none':'';if($('paceBtn'))$('paceBtn').style.display=r.noEstimate?'none':'';
@@ -1209,7 +1213,7 @@ function showCustomRaceRoute(r){
 }
 async function deleteCustomRace(id){
   if(!await dialog({title:'Supprimer cette course ?',text:'Elle sera retirée définitivement.',ok:'Supprimer',danger:true}))return;
-  localStorage.setItem(CUSTOM_KEY,JSON.stringify(getCustomRaces().filter(r=>r.id!==id)));updateRaceGrid();
+  localStorage.setItem(CUSTOM_KEY,JSON.stringify(getCustomRaces().filter(r=>r.id!==id)));showRaceList();
 }
 /* =========================
    ESTIMATION DU TEMPS — moteur hybride RUN3D
