@@ -394,6 +394,14 @@ body.race-route-active #toast:not(.show){transform:translate(-50%,140px)}
 .chrono-detail-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:7px;padding:8px 10px;border-top:1px solid rgba(255,255,255,.08)}
 .chrono-detail-row div{min-width:0}.chrono-detail-row strong{display:block;font-size:10px}.chrono-detail-row small{display:block;font-size:8px;opacity:.65;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chrono-detail-row span{font-size:11px;font-weight:850}.chrono-detail-row em{font-style:normal;font-size:10px;opacity:.72}.chrono-detail-row.bonus span{color:#7ee2ad}.chrono-detail-row.penalty span{color:#ff9d8f}.chrono-detail-final{border-top:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06)}
 @media(max-width:390px){.chrono-detail-row{grid-template-columns:minmax(0,1fr) auto}.chrono-detail-row em{display:none}}
+
+.auth-form{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.auth-form input{width:100%;padding:13px 14px;border-radius:14px;border:1.5px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;font-size:15px}
+.auth-form input:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px rgba(122,77,255,.2)}
+.auth-msg{min-height:18px;font-size:13px;font-weight:700;color:var(--danger)}
+.auth-link{background:none;border:0;padding:6px;font:inherit;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;text-decoration:underline}
+.auth-link.danger{color:var(--danger)}
+.auth-form .row button:disabled,.auth-link:disabled{opacity:.5;cursor:default}
 </style>
 </head>
 <body>
@@ -448,6 +456,9 @@ body.race-route-active #toast:not(.show){transform:translate(-50%,140px)}
   <button id="satToggle" class="fab glass" onclick="toggleSatellite()" title="Vue satellite"></button>
   <button class="fab glass" onclick="getLocation()" title="Ma position"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/></svg></button>
   <button class="fab glass" onclick="openRaces('cal')" title="Courses"><svg class="i" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg></button>
+  <button id="accountBtn" class="fab glass" onclick="openAccount()" title="Se connecter" aria-label="Se connecter">
+    <svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+  </button>
   <button id="routeToggle" class="fab primary" onclick="toggleRoute()" title="Créer un parcours"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
 </div>
 
@@ -1518,6 +1529,257 @@ map.on('load',()=>{
 });
 updateTerrainButton();updateSatButton();
 loadRacesJson();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* =========================
+   COMPTE + SYNCHRONISATION (Supabase)
+   - Création de compte
+   - Connexion / déconnexion
+   - Mot de passe oublié
+   - Réinitialisation du mot de passe
+   - Synchronisation des parcours, courses perso et réglages
+========================= */
+const SB_URL='https://aadejjggmfikzqleestb.supabase.co';
+const SB_KEY='sb_publishable_xVhWZC0K85xHK8YAvzJq4Q_ZfEsOOdH';
+
+const sb=(window.supabase&&window.supabase.createClient)
+  ?window.supabase.createClient(SB_URL,SB_KEY,{
+      auth:{
+        persistSession:true,
+        autoRefreshToken:true,
+        detectSessionInUrl:true
+      }
+    })
+  :null;
+
+const SYNC_TABLES=[{table:'routes',key:'run3d_routes'},{table:'custom_races',key:'run3d_custom_races'}];
+const SETTING_KEYS=['run3d_runner','run3d_target_time'];
+const WATCHED=new Set([...SYNC_TABLES.map(t=>t.key),...SETTING_KEYS]);
+let sbUser=null,sbApplying=false,sbPushTimer=null,sbSyncing=false,sbAgain=false,sbReady=false,sbWarned=false;
+
+/* Détecte toute écriture dans les clés synchronisées, sans toucher au reste du code */
+const _lsSet=Storage.prototype.setItem;
+Storage.prototype.setItem=function(k,v){_lsSet.call(this,k,v);if(this===localStorage&&!sbApplying&&sbUser&&sbReady&&WATCHED.has(k))schedulePush()};
+
+const lsRead=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch{return d}};
+const lsApply=(k,v)=>{sbApplying=true;try{if(v==null)localStorage.removeItem(k);else _lsSet.call(localStorage,k,typeof v==='string'?v:JSON.stringify(v))}catch{}finally{sbApplying=false}};
+const syncedKey=t=>`run3d_synced_${sbUser.id}_${t}`;
+
+function normalizeList(list){
+  let changed=false;const seen=new Set();
+  const out=(Array.isArray(list)?list:[]).filter(x=>x&&typeof x==='object').map(x=>{
+    let id=Number(x.id);
+    if(!Number.isSafeInteger(id)||id<=0||seen.has(id)){id=Date.now()+seen.size+Math.floor(Math.random()*1000);x={...x,id};changed=true}
+    seen.add(id);return x;
+  });
+  return{out,changed};
+}
+function refreshAfterSync(){
+  try{renderHistory()}catch{}
+  try{updateRaceGrid()}catch{}
+}
+function syncWarn(e){
+  console.error('Sync',e);
+  if(!sbWarned){sbWarned=true;toast('Synchronisation impossible pour le moment. Nouvelle tentative plus tard.')}
+}
+
+async function pullMerge(){
+  if(!sb||!sbUser)return;
+  for(const {table,key} of SYNC_TABLES){
+    const {data:rows,error}=await sb.from(table).select('id,data');
+    if(error)throw error;
+    const cloud=new Map(rows.map(r=>[String(r.id),r.data]));
+    const {out:local,changed}=normalizeList(lsRead(key,[]));
+    if(changed)lsApply(key,local);
+    const synced=new Set(lsRead(syncedKey(table),[]).map(String));
+    const localIds=new Set(local.map(x=>String(x.id)));
+    const merged=[];
+    local.forEach(it=>{
+      const id=String(it.id);
+      if(cloud.has(id))merged.push(cloud.get(id));
+      else if(!synced.has(id))merged.push(it);          /* nouveau sur cet appareil : sera envoyé */
+      /* sinon : supprimé depuis un autre appareil, on l'écarte */
+    });
+    cloud.forEach((v,id)=>{if(!localIds.has(id)&&!synced.has(id))merged.push(v)});
+    merged.sort((a,b)=>Number(b.id)-Number(a.id));
+    lsApply(key,merged);
+    lsApply(syncedKey(table),[...cloud.keys()]);        /* ce qui existe déjà dans le cloud */
+  }
+  /* réglages coureur */
+  const {data:st,error:e2}=await sb.from('user_settings').select('runner,target_time').maybeSingle();
+  if(e2)throw e2;
+  if(st){
+    if(st.runner&&Object.keys(st.runner).length)lsApply('run3d_runner',st.runner);
+    if(st.target_time)lsApply('run3d_target_time',st.target_time);
+  }
+  await pushAll(true);
+  refreshAfterSync();
+}
+
+function schedulePush(){clearTimeout(sbPushTimer);sbPushTimer=setTimeout(()=>pushAll().catch(syncWarn),1500)}
+
+async function pushAll(force){
+  if(!sb||!sbUser)return;
+  if(sbSyncing){sbAgain=true;return}
+  sbSyncing=true;
+  try{
+    do{
+      sbAgain=false;
+      for(const {table,key} of SYNC_TABLES){
+        const {out:list,changed}=normalizeList(lsRead(key,[]));
+        if(changed)lsApply(key,list);
+        const ids=list.map(x=>String(x.id));
+        const synced=new Set(lsRead(syncedKey(table),[]).map(String));
+        const fresh=list.filter(x=>!synced.has(String(x.id)));
+        if(fresh.length){
+          const now=new Date().toISOString();
+          for(let i=0;i<fresh.length;i+=20){
+            const chunk=fresh.slice(i,i+20).map(it=>({user_id:sbUser.id,id:Number(it.id),data:it,updated_at:now}));
+            const {error}=await sb.from(table).upsert(chunk,{onConflict:'user_id,id'});
+            if(error)throw error;
+          }
+        }
+        const removed=[...synced].filter(id=>!ids.includes(id));
+        if(removed.length){
+          const {error}=await sb.from(table).delete().in('id',removed.map(Number));
+          if(error)throw error;
+        }
+        lsApply(syncedKey(table),ids);
+      }
+      const runner=lsRead('run3d_runner',null),target=localStorage.getItem('run3d_target_time');
+      if(force||runner||target){
+        if(runner||target){
+          const {error}=await sb.from('user_settings').upsert({user_id:sbUser.id,runner:runner||null,target_time:target||null,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+          if(error)throw error;
+        }
+      }
+      sbWarned=false;
+    }while(sbAgain);
+  }finally{sbSyncing=false}
+}
+window.addEventListener('online',()=>{if(sbUser)schedulePush()});
+
+/* ---------- Interface ---------- */
+const AUTH_ERR={
+  'Invalid login credentials':'Email ou mot de passe incorrect.',
+  'Email not confirmed':'Confirme d’abord ton email avec le lien reçu.',
+  'User already registered':'Un compte existe déjà avec cet email.',
+  'Email rate limit exceeded':'Trop de tentatives, réessaie dans quelques minutes.'
+};
+const authMsg=e=>AUTH_ERR[e&&e.message]||(e&&e.message)||'Erreur inconnue';
+const closeAuth=()=>{$('modal').classList.remove('show')};
+function openModal(html){$('dialog').innerHTML=html;$('modal').classList.add('show')}
+function updateAccountButton(){
+  const b=$('accountBtn');if(!b)return;
+  b.classList.toggle('on',!!sbUser);
+  b.title=sbUser?'Mon compte ('+sbUser.email+')':'Se connecter';
+  b.setAttribute('aria-label',b.title);
+}
+function openAccount(){
+  if(!sb){toast('Comptes indisponibles : service non chargé.');return}
+  sbUser?openAccountPanel():openAuthDialog();
+}
+function openAuthDialog(){
+  openModal(`<h3>Mon compte</h3><p>Connecte-toi pour retrouver tes parcours sur tous tes appareils.</p>
+  <form id="authForm" class="auth-form" novalidate>
+    <input id="authEmail" type="email" autocomplete="email" inputmode="email" placeholder="Email" aria-label="Email" required>
+    <input id="authPass" type="password" autocomplete="current-password" placeholder="Mot de passe (8 caractères min.)" aria-label="Mot de passe" required>
+    <div class="auth-msg" id="authMsg" role="alert" aria-live="polite"></div>
+    <div class="row"><button type="button" class="btn" id="authSignUp">Créer un compte</button><button type="submit" class="btn solid" id="authSignIn">Se connecter</button></div>
+    <button type="button" class="auth-link" id="authForgot">Mot de passe oublié ?</button>
+    <button type="button" class="auth-link" id="authClose">Continuer sans compte</button>
+  </form>`);
+  const em=$('authEmail'),pw=$('authPass'),msg=t=>{$('authMsg').textContent=t||''};
+  em.focus();
+  const busy=v=>{['authSignUp','authSignIn','authForgot'].forEach(i=>$(i).disabled=v)};
+  const creds=()=>{const e=em.value.trim(),p=pw.value;if(!e||!/^\S+@\S+\.\S+$/.test(e)){msg('Entre un email valide.');em.focus();return null}return{e,p}};
+  $('authClose').onclick=closeAuth;
+  $('authForm').onsubmit=async ev=>{
+    ev.preventDefault();const c=creds();if(!c)return;if(!c.p){msg('Entre ton mot de passe.');pw.focus();return}
+    busy(true);msg('Connexion…');
+    const {error}=await sb.auth.signInWithPassword({email:c.e,password:c.p});
+    busy(false);if(error){msg(authMsg(error));return}
+    closeAuth();toast('Connecté');
+  };
+  $('authSignUp').onclick=async()=>{
+    const c=creds();if(!c)return;if(c.p.length<8){msg('Mot de passe : 8 caractères minimum.');pw.focus();return}
+    busy(true);msg('Création du compte…');
+    const {data,error}=await sb.auth.signUp({email:c.e,password:c.p,options:{emailRedirectTo:location.origin+location.pathname}});
+    busy(false);if(error){msg(authMsg(error));return}
+    if(data.session){closeAuth();toast('Compte créé')}
+    else if(data.user&&data.user.identities&&data.user.identities.length===0)msg('Un compte existe déjà avec cet email.');
+    else{closeAuth();toast('Vérifie ta boîte mail pour confirmer ton compte.')}
+  };
+  $('authForgot').onclick=async()=>{
+    const e=em.value.trim();if(!/^\S+@\S+\.\S+$/.test(e)){msg('Entre ton email ci-dessus.');em.focus();return}
+    busy(true);
+    const {error}=await sb.auth.resetPasswordForEmail(e,{redirectTo:location.origin+location.pathname});
+    busy(false);if(error){msg(authMsg(error));return}
+    closeAuth();toast('Si ce compte existe, un email vient d’être envoyé.');
+  };
+}
+function openAccountPanel(){
+  openModal(`<h3>Mon compte</h3><p>${escapeHtml(sbUser.email||'')}</p><p>Tes parcours, courses perso et réglages sont synchronisés.</p>
+  <div class="auth-form"><div class="auth-msg" id="authMsg" role="alert" aria-live="polite"></div>
+  <div class="row"><button class="btn" id="accClose">Fermer</button><button class="btn solid" id="accOut">Se déconnecter</button></div>
+  <button class="auth-link danger" id="accDel">Supprimer mon compte et mes données</button></div>`);
+  $('accClose').onclick=closeAuth;
+  $('accOut').onclick=async()=>{
+    $('accOut').disabled=true;
+    try{clearTimeout(sbPushTimer);await pushAll()}catch(e){syncWarn(e)}
+    await sb.auth.signOut();closeAuth();
+  };
+  $('accDel').onclick=async()=>{
+    if(!confirm('Supprimer définitivement ton compte et toutes tes données synchronisées ? Cette action est irréversible.'))return;
+    const {error}=await sb.rpc('delete_my_account');
+    if(error){$('authMsg').textContent='Suppression impossible : '+authMsg(error);return}
+    await sb.auth.signOut();closeAuth();toast('Compte supprimé');
+  };
+}
+function openNewPassword(){
+  openModal(`<h3>Nouveau mot de passe</h3><p>Choisis un nouveau mot de passe pour ton compte.</p>
+  <form id="npForm" class="auth-form" novalidate>
+    <input id="npPass" type="password" autocomplete="new-password" placeholder="Nouveau mot de passe (8 min.)" aria-label="Nouveau mot de passe">
+    <div class="auth-msg" id="authMsg" role="alert" aria-live="polite"></div>
+    <div class="row"><button type="submit" class="btn solid">Enregistrer</button></div></form>`);
+  $('npPass').focus();
+  $('npForm').onsubmit=async ev=>{
+    ev.preventDefault();const p=$('npPass').value;if(p.length<8){$('authMsg').textContent='8 caractères minimum.';return}
+    const {error}=await sb.auth.updateUser({password:p});
+    if(error){$('authMsg').textContent=authMsg(error);return}
+    closeAuth();toast('Mot de passe mis à jour');
+  };
+}
+
+/* Quand on se déconnecte, on retire les données perso de cet appareil (ordinateur partagé) */
+function wipeLocalPersonal(uid){
+  [...SYNC_TABLES.map(t=>t.key),...SETTING_KEYS].forEach(k=>lsApply(k,null));
+  if(uid)SYNC_TABLES.forEach(t=>lsApply(`run3d_synced_${uid}_${t.table}`,null));
+  refreshAfterSync();
+}
+
+if(sb){
+  let lastUid=null;
+  sb.auth.onAuthStateChange((event,session)=>{
+    /* setTimeout : évite d'appeler Supabase à l'intérieur du callback (risque de blocage) */
+    setTimeout(async()=>{
+      if(event==='PASSWORD_RECOVERY'){sbUser=session&&session.user;sbReady=false;updateAccountButton();openNewPassword();return}
+      if(session&&session.user){
+        sbUser=session.user;updateAccountButton();
+        if(lastUid!==sbUser.id){
+          lastUid=sbUser.id;sbReady=false;
+          try{await pullMerge();sbReady=true;if(event==='SIGNED_IN')toast('Synchronisé')}catch(e){syncWarn(e);sbReady=true}
+        }
+      }else{
+        const uid=lastUid;sbUser=null;lastUid=null;sbReady=false;updateAccountButton();
+        if(event==='SIGNED_OUT'&&uid)wipeLocalPersonal(uid);
+      }
+    },0);
+  });
+}
+updateAccountButton();
+
 </script>
 </body>
 </html>
